@@ -1,8 +1,15 @@
-# SubQuery - Example Project for Polygon zkEVM Sepolia
+# NFT2.0 SubQuery
 
-[SubQuery](https://subquery.network) is a fast, flexible, and reliable open-source data indexer that provides you with custom APIs for your web3 project across all of our supported networks. To learn about how to get started with SubQuery, [visit our docs](https://academy.subquery.network).
+The [SubQuery](https://subquery.network) project for NFT2.0 protocol. This includes indexer for all protocol originated (onchain) events, including but not limited to:
+* Factory events: create data-registries, collections, derived-accounts
+* Data-registry events: write, set schema, compose, derive, reclaim
+* Collection events: mint, burn, transfer
+* Derived-account: claim royalty
 
-**This SubQuery project indexes all transfers and approval events for the [Wrapped BNB](https://testnet.bscscan.com/address/0xae13d989dac2f0debff460ac112a837c89baa7cd) on BSC Testnet's Network**
+## Prerequisites
+* [NodeJS v18.x](https://nodejs.org/en/blog/release/v18.17.0)
+* [Docker LTS](https://docs.docker.com/engine/install/)
+* [SubQuery CLI](https://academy.subquery.network/quickstart/quickstart.html#_1-install-the-subquery-cli)
 
 ## Start
 
@@ -185,6 +192,4 @@ Take a look at some of our advanced features to take your project to the next le
 - [**Project Optimisation Advice**](https://academy.subquery.network/build/optimisation.html) - Some common tips on how to tweak your project to maximise performance.
 - [**GraphQL Subscriptions**](https://academy.subquery.network/run_publish/subscription.html) - Build more reactive front end applications that subscribe to changes in your SubQuery project.
 
-## Need Help?
 
-The fastest way to get support is by [searching our documentation](https://academy.subquery.network), or by [joining our discord](https://discord.com/invite/subquery) and messaging us in the `#technical-support` channel.
