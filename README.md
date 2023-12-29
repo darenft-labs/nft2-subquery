@@ -96,7 +96,14 @@ $ SUBQL_ACCESS_TOKEN="<access-token>" subql publish
 
 - The IPFS CID will be saved in .project-cid file in root folder
 
-- Deploy
+- Deployment can be done either via Console or SubQL CLI
+```bash
+$ SUBQL_ACCESS_TOKEN="<access-token>" subql deployment:deploy -d \
+--org "<your-org>" \
+--projectName "<project-name>" \
+--endpoint "<rpc-endpoint>" \
+--ipfsCID "<ipfs-cid>"
+```
 
 ## Cleanup
 - Down Docker compose
@@ -107,6 +114,14 @@ $ docker-compose down
 - Cleanup PostgreSQL data
 ```bash
 $ sudo rm -rf .data/
+```
+
+- Delete deployment on Managed service
+```bash
+$ SUBQL_ACCESS_TOKEN="<access-token>" subql deployment:delete -d \
+--org "<your-org>" \
+--project_name "<project-name>" \
+--deploymentID "<deployment-id>"
 ```
 
 ## TODO
