@@ -2,20 +2,55 @@
 # Add the `@index` or `@index(unique: true)` annotation after any non-key field
 # https://academy.subquery.network/build/graphql.html#indexing-by-non-primary-key-field
 
-type Transfer @entity {
-  id: ID! # Transaction hash
-  blockHeight: BigInt
-  to: String!
-  from: String!
-  value: BigInt!
-  contractAddress: String!
+type DataRegistry @entity {
+  id: ID!
+  blockHeight: BigInt  
+  address: String
+  dapp: String
+  uri: String
 }
 
-type Approval @entity {
-  id: ID! # Transaction hash
+type DataRegistrySchema @entity {
+  id: ID!
+  registry: DataRegistry!
+  key: String!
+  schema: String!
+}
+
+type NFT @entity {
+  id: ID!
+  collection: String!
+  tokenId: BigInt!
+}
+
+type DataRegistryNFTData @entity {
+  id: ID!
   blockHeight: BigInt
-  owner: String!
-  spender: String!
-  value: BigInt!
-  contractAddress: String!
+  dataRegistry: DataRegistry!
+  collection: String!
+  tokenId: BigInt!
+  key: String!
+  value: String!
+}
+
+type Collection @entity {
+  id: ID!
+  blockHeight: BigInt
+  address: String
+  owner: String
+}
+
+type Collection721A @entity {
+  id: ID!
+  blockHeight: BigInt
+  address: String
+  owner: String
+}
+
+type DerivedAccount @entity {
+  id: ID!
+  blockHeight: BigInt
+  address: String
+  underlyingCollection: String
+  underlyingTokenId: BigInt
 }

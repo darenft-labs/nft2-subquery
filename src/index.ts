@@ -1,2 +1,4 @@
 //Exports all handler functions
-export * from "./mappings/mappingHandlers";
+export * from "./mappings/factoryHandlers";
+export * from "./mappings/dataRegistryHandlers";
+
