@@ -178,6 +178,16 @@ You can explore the different possible queries and entities to help you with Gra
 ## Publish
 TBD
 
+## Cleanup
+- Down Docker compose
+```bash
+$ docker-compose down
+```
+
+- Cleanup PostgreSQL data
+```bash
+$ sudo rm -rf .data/
+```
 
 ## TODO
 

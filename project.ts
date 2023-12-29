@@ -39,11 +39,12 @@ const project: EthereumProject = {
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
     endpoint: ["https://data-seed-prebsc-1-s2.bnbchain.org:8545","https://data-seed-prebsc-1-s1.bnbchain.org:8545","https://data-seed-prebsc-2-s1.bnbchain.org:8545","https://data-seed-prebsc-2-s2.bnbchain.org:8545"],
+    //endpoint: ["https://bsc-testnet.nodereal.io/v1/be7b9aaa068e4511a051b4b09ec25978"],
   },
   dataSources: [
     {
       kind: EthereumDatasourceKind.Runtime,
-      startBlock: 30738048,
+      startBlock: 36321607,
 
       options: {
         // Must be a key of assets
