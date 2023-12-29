@@ -47,36 +47,53 @@ const project: EthereumProject = {
 
       options: {
         // Must be a key of assets
-        abi: "erc20",
-        // This is the contract address for Wrapped BNB https://testnet.bscscan.com/address/0xae13d989dac2f0debff460ac112a837c89baa7cd
-        address: "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+        abi: "factory",
+        address: "0x702067e6010E48f0eEf11c1E06f06aaDb04734e2",
       },
-      assets: new Map([["erc20", { file: "./abis/erc20.abi.json" }]]),
+      assets: new Map([["factory", { file: "./abis/factory.abi.json" }]]),
       mapping: {
         file: "./dist/index.js",
-        handlers: [
-          {
-            kind: EthereumHandlerKind.Call,
-            handler: "handleTransaction",
-            filter: {
-              /**
-               * The function can either be the function fragment or signature
-               * function: '0x095ea7b3'
-               * function: '0x7ff36ab500000000000000000000000000000000000000000000000000000000'
-               */
-              function: "approve(address spender, uint256 rawAmount)",
-            },
-          },
+        handlers: [          
           {
             kind: EthereumHandlerKind.Event,
-            handler: "handleLog",
+            handler: "handleDataRegistryCreated",
             filter: {
               /**
                * Follows standard log filters https://docs.ethers.io/v5/concepts/events/
                * address: "0x60781C2586D68229fde47564546784ab3fACA982"
                */
               topics: [
-                "Transfer(address indexed from, address indexed to, uint256 amount)",
+                "DataRegistryCreated(address dapp, address registry, string dappURI)",
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+  templates: [
+    {
+      name: "DataRegistry",
+      kind: EthereumDatasourceKind.Runtime,      
+
+      options: {
+        // Must be a key of assets
+        abi: "data-registry",        
+      },
+      assets: new Map([["data-registry", { file: "./abis/data-registry.abi.json" }]]),
+      mapping: {
+        file: "./dist/index.js",
+        handlers: [          
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleSafeWrite",
+            filter: {
+              /**
+               * Follows standard log filters https://docs.ethers.io/v5/concepts/events/
+               * address: "0x60781C2586D68229fde47564546784ab3fACA982"
+               */
+              topics: [
+                "Write(address requester, address nftCollection, uint256 tokenId, bytes32 key, bytes value)",
               ],
             },
           },

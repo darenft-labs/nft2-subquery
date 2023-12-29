@@ -19,3 +19,39 @@ type Approval @entity {
   value: BigInt!
   contractAddress: String!
 }
+
+type DataRegistry @entity {
+  id: ID!
+  blockHeight: BigInt  
+  address: String
+  dapp: String
+  uri: String
+}
+
+type DataRegistrySchema @entity {
+  id: ID!
+  registry: DataRegistry!
+  key: String!
+  schema: String!
+}
+
+type NFT @entity {
+  id: ID!
+  collection: String!
+  tokenId: BigInt!
+}
+
+type DataRegistryNFT @entity {
+  id: ID!
+  registry: DataRegistry!
+  nft: NFT!
+}
+
+type DataRegistryNFTData @entity {
+  id: ID!
+  blockHeight: BigInt
+  registry: DataRegistry!
+  nft: NFT!
+  key: String!
+  value: String!
+}
