@@ -39,12 +39,11 @@ const project: EthereumProject = {
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
     endpoint: ["https://data-seed-prebsc-1-s2.bnbchain.org:8545","https://data-seed-prebsc-1-s1.bnbchain.org:8545","https://data-seed-prebsc-2-s1.bnbchain.org:8545","https://data-seed-prebsc-2-s2.bnbchain.org:8545"],
-    //endpoint: ["https://bsc-testnet.nodereal.io/v1/be7b9aaa068e4511a051b4b09ec25978"],
   },
   dataSources: [
     {
       kind: EthereumDatasourceKind.Runtime,
-      startBlock: 36375106,
+      startBlock: 36321511,
 
       options: {
         // Must be a key of assets
@@ -65,6 +64,32 @@ const project: EthereumProject = {
                */
               topics: [
                 "DataRegistryCreated(address dapp, address registry, string dappURI)",
+              ],
+            },
+          },
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleCollectionCreated",
+            filter: {
+              /**
+               * Follows standard log filters https://docs.ethers.io/v5/concepts/events/
+               * address: "0x60781C2586D68229fde47564546784ab3fACA982"
+               */
+              topics: [
+                "CollectionCreated(address owner, address collection)",
+              ],
+            },
+          },
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleDerivedAccountCreated",
+            filter: {
+              /**
+               * Follows standard log filters https://docs.ethers.io/v5/concepts/events/
+               * address: "0x60781C2586D68229fde47564546784ab3fACA982"
+               */
+              topics: [
+                "DerivedAccountCreated(address underlyingCollection, uint256 underlyingTokenId, address derivedAccount)",
               ],
             },
           },
@@ -98,6 +123,51 @@ const project: EthereumProject = {
               ],
             },
           },
+        ],
+      },
+    },
+    {
+      name: "Collection",
+      kind: EthereumDatasourceKind.Runtime,      
+
+      options: {
+        // Must be a key of assets
+        abi: "erc721",        
+      },
+      assets: new Map([["erc721", { file: "./abis/erc721.abi.json" }]]),
+      mapping: {
+        file: "./dist/index.js",
+        handlers: [          
+        ],
+      },
+    },
+    {
+      name: "Collection721A",
+      kind: EthereumDatasourceKind.Runtime,      
+
+      options: {
+        // Must be a key of assets
+        abi: "erc721a",        
+      },
+      assets: new Map([["erc721a", { file: "./abis/erc721a.abi.json" }]]),
+      mapping: {
+        file: "./dist/index.js",
+        handlers: [          
+        ],
+      },
+    },
+    {
+      name: "DerivedAccount",
+      kind: EthereumDatasourceKind.Runtime,      
+
+      options: {
+        // Must be a key of assets
+        abi: "derived-account",        
+      },
+      assets: new Map([["derived-account", { file: "./abis/derived-account.abi.json" }]]),
+      mapping: {
+        file: "./dist/index.js",
+        handlers: [          
         ],
       },
     },

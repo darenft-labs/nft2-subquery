@@ -18,7 +18,7 @@ The [SubQuery](https://subquery.network) project for NFT2.0 protocol. This inclu
 $ yarn install
 ```
 
-## Run
+## Build
 - Generate types
 ```bash
 $ yarn codegen
@@ -29,11 +29,13 @@ $ yarn codegen
 $ yarn build
 ```
 
-- Spin up Docker
+## Run locally
+- Spin up infrastructure stack, which includes PostgreSQL, Subquery node, GraphQL engine by using docker compose
 ```bash
 $ docker-compose pull && docker-compose up
 ```
-then open [GraphQL playground](http://localhost:3000)
+
+- Access [GraphQL playground](http://localhost:3000/) to start query
 
 ## Test
 - Execute UT
@@ -42,32 +44,17 @@ $ yarn test
 ```
 
 ## Query
-
-For this project, you can try to query with the following GraphQL code to get a taste of how it works.
+- Via local [GraphQL playground](http://localhost:3000/)
 
 ```graphql
-{
-  query {
-    transfers(first: 5, orderBy: VALUE_DESC) {
-      totalCount
-      nodes {
-        id
-        blockHeight
-        from
-        to
-        value
-        contractAddress
-      }
-    }
-  }
-  approvals(first: 5, orderBy: BLOCK_HEIGHT_DESC) {
+query {
+  dataRegistries(first: 5) {
     nodes {
       id
       blockHeight
-      owner
-      spender
-      value
-      contractAddress
+      dapp
+      address
+      uri
     }
   }
 }
@@ -78,94 +65,14 @@ The result should look something like this:
 ```json
 {
   "data": {
-    "query": {
-      "transfers": {
-        "totalCount": 12,
-        "nodes": [
-          {
-            "id": "0x4cd1b558b1f4dcd0282306aa616eca9f471d43f9ad2e215fdc89842599fff41b",
-            "blockHeight": "30738117",
-            "from": "0x4cc661636e863438CDD3997FeF97F7834c18F30a",
-            "to": "0xD99D1c33F9fC3444f8101754aBC46c52416550D1",
-            "value": "127102935664186759",
-            "contractAddress": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"
-          },
-          {
-            "id": "0xb0fdfa888f4bf485c5e1fe7da7cd0602a24428cb7bc4cba4ee3c43e61a15f20d",
-            "blockHeight": "30738255",
-            "from": "0x79e06f034Cf960B360fFb0FE6C300aFF9E091d98",
-            "to": "0xD99D1c33F9fC3444f8101754aBC46c52416550D1",
-            "value": "30485080530383172",
-            "contractAddress": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"
-          },
-          {
-            "id": "0x3e9e81c473adb26aa5b73767ff98adf2cc1541170d222920ca66e368fcc6e946",
-            "blockHeight": "30738226",
-            "from": "0x79e06f034Cf960B360fFb0FE6C300aFF9E091d98",
-            "to": "0xD99D1c33F9fC3444f8101754aBC46c52416550D1",
-            "value": "18284534394168783",
-            "contractAddress": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"
-          },
-          {
-            "id": "0x231409b8a5cee2699ca7c8a2dda81c18b6ccad2c4f4724fd06d26d80ee996fb4",
-            "blockHeight": "30738224",
-            "from": "0x79e06f034Cf960B360fFb0FE6C300aFF9E091d98",
-            "to": "0x94D13A9CF6cFeD7089C2e487dCC53C25cB0AcF1a",
-            "value": "10058176217011011",
-            "contractAddress": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"
-          },
-          {
-            "id": "0xe8fb6aa646fc77d8f594f324f0f23eb9321307e3b36d04f17df920c06e630337",
-            "blockHeight": "30738224",
-            "from": "0x79e06f034Cf960B360fFb0FE6C300aFF9E091d98",
-            "to": "0xD99D1c33F9fC3444f8101754aBC46c52416550D1",
-            "value": "10053489076891799",
-            "contractAddress": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"
-          }
-        ]
-      }
-    },
-    "approvals": {
+    "dataRegistries": {
       "nodes": [
         {
-          "id": "0x7cdf7d0a5e1be777c8cb2773ce0a157b1d18a5e91a77dd36793c5f9dbfcaa4a4",
-          "blockHeight": null,
-          "owner": "0xCBF177f46913069f6315219f243Dc14a21605fC8",
-          "spender": "0xD99D1c33F9fC3444f8101754aBC46c52416550D1",
-          "value": "100000000000000000",
-          "contractAddress": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"
-        },
-        {
-          "id": "0xac01452db99cb5e50d5defd20c72a88cb4286816fedd088709023c36c0e1ae85",
-          "blockHeight": null,
-          "owner": "0xCBF177f46913069f6315219f243Dc14a21605fC8",
-          "spender": "0xD99D1c33F9fC3444f8101754aBC46c52416550D1",
-          "value": "100000000000000000",
-          "contractAddress": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"
-        },
-        {
-          "id": "0xee60ff1f555bb052a0b624b9988855e6f8e368437911b42dfa3c18678e3dc91a",
-          "blockHeight": null,
-          "owner": "0xCBF177f46913069f6315219f243Dc14a21605fC8",
-          "spender": "0xD99D1c33F9fC3444f8101754aBC46c52416550D1",
-          "value": "100000000000000000",
-          "contractAddress": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"
-        },
-        {
-          "id": "0x0106161b9235f16a703b639eb241849076b72c6580d220d781098dea3912a090",
-          "blockHeight": null,
-          "owner": "0xCBF177f46913069f6315219f243Dc14a21605fC8",
-          "spender": "0xD99D1c33F9fC3444f8101754aBC46c52416550D1",
-          "value": "100000000000000000",
-          "contractAddress": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"
-        },
-        {
-          "id": "0x8a4da688ce5f82a8f5f4c6f50e09299e074e8aea6fb075d4a5c198aa649c8b91",
-          "blockHeight": null,
-          "owner": "0xCBF177f46913069f6315219f243Dc14a21605fC8",
-          "spender": "0xD99D1c33F9fC3444f8101754aBC46c52416550D1",
-          "value": "100000000000000000",
-          "contractAddress": "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd"
+          "id": "0xcf9748bf255125e6143fe896de36ed2b7c329108",
+          "blockHeight": "36375106",
+          "dapp": "0x2f1038982da18dDe6934D972128c50c079845176",
+          "address": "0xcf9748bf255125e6143fe896de36ed2b7c329108",
+          "uri": "ipfs://account-3"
         }
       ]
     }
@@ -173,10 +80,23 @@ The result should look something like this:
 }
 ```
 
-You can explore the different possible queries and entities to help you with GraphQL using the documentation draw on the right.
+- Via cURL (after publishing project to Managed Service)
+```bash
+$ curl -g -X POST -H "Content-type: application/json" \
+-H "Authorization: Bearer <access-token>" \
+-d '{"query": "query{dataRegistries(first:5) {nodes {id blockHeight dapp address uri}}}"}' \
+<subquery-query-url>
+```
 
 ## Publish
-TBD
+- Publish project manifest to IPFS
+```bash
+$ SUBQL_ACCESS_TOKEN="<access-token>" subql publish
+```
+
+- The IPFS CID will be saved in .project-cid file in root folder
+
+- Deploy
 
 ## Cleanup
 - Down Docker compose
