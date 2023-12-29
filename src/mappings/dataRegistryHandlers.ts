@@ -1,4 +1,4 @@
-import { DataRegistry, NFT, DataRegistryNFT, DataRegistryNFTData } from "../types";
+import { DataRegistry, NFT, DataRegistryNFTData } from "../types";
 import {
   WriteLog,  
 } from "../types/abi-interfaces/DataRegistryAbi";
@@ -16,7 +16,7 @@ async function getDataRegistry(id: string): Promise<DataRegistry> {
   return dataRegistry;
 }
 
-async function getNFT(collection: string, tokenId: BigNumber): Promise<NFT> {
+async function getNFT(collection: string, tokenId: bigint): Promise<NFT> {
   let nft = await NFT.get(`${collection}-${tokenId.toString()}`);
 
   if (!nft) {
@@ -27,20 +27,27 @@ async function getNFT(collection: string, tokenId: BigNumber): Promise<NFT> {
     })
   }
 
+  return nft;
 }
 
 export async function handleSafeWrite(log: WriteLog): Promise<void> {
   logger.info(`New Write log at block ${log.blockNumber}`);
   assert(log.args, "No log.args");
 
+  const dataRegistryId = log.address;
   const dataRegistry = await getDataRegistry(log.address);
-  const nft = await getNFT(log.args.nftCollection, log.args.tokenId);
 
-  const transaction = DataRegistryNFTData.create({
+  const nftId = `${log.args.nftCollection}-${log.args.tokenId.toString()}`;
+  const nft = await getNFT(log.args.nftCollection, log.args.tokenId.toBigInt());
+
+  const data = DataRegistryNFTData.create({
     id: `${log.transactionHash}-${log.transactionIndex}`,
     blockHeight: BigInt(log.blockNumber),
-    
+    dataRegistryId,
+    nftId,
+    key: log.args.key,
+    value: log.args.value,
   });
 
-  await transaction.save();
+  await data.save();
 }
