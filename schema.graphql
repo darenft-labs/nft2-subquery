@@ -45,7 +45,8 @@ type DataRegistryNFTData @entity {
   id: ID!
   blockHeight: BigInt
   dataRegistry: DataRegistry!
-  nft: NFT!
+  collection: String!
+  tokenId: BigInt!
   key: String!
   value: String!
 }

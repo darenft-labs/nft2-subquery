@@ -37,14 +37,12 @@ export async function handleSafeWrite(log: WriteLog): Promise<void> {
   const dataRegistryId = log.address;
   const dataRegistry = await getDataRegistry(log.address);
 
-  const nftId = `${log.args.nftCollection}-${log.args.tokenId.toString()}`;
-  const nft = await getNFT(log.args.nftCollection, log.args.tokenId.toBigInt());
-
   const data = DataRegistryNFTData.create({
     id: `${log.transactionHash}-${log.transactionIndex}`,
     blockHeight: BigInt(log.blockNumber),
     dataRegistryId,
-    nftId,
+    collection: log.args.nftCollection,
+    tokenId: log.args.tokenId.toBigInt(),
     key: log.args.key,
     value: log.args.value,
   });

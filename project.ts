@@ -44,7 +44,7 @@ const project: EthereumProject = {
   dataSources: [
     {
       kind: EthereumDatasourceKind.Runtime,
-      startBlock: 36321607,
+      startBlock: 36375106,
 
       options: {
         // Must be a key of assets
