@@ -43,7 +43,7 @@ const project: EthereumProject = {
   dataSources: [
     {
       kind: EthereumDatasourceKind.Runtime,
-      startBlock: 36487056,
+      startBlock: 36493733,
 
       options: {
         // Must be a key of assets
@@ -83,11 +83,7 @@ const project: EthereumProject = {
           {
             kind: EthereumHandlerKind.Event,
             handler: "handleDerivedAccountCreated",
-            filter: {
-              /**
-               * Follows standard log filters https://docs.ethers.io/v5/concepts/events/
-               * address: "0x60781C2586D68229fde47564546784ab3fACA982"
-               */
+            filter: {              
               topics: [
                 "DerivedAccountCreated(address underlyingCollection, uint256 underlyingTokenId, address derivedAccount)",
               ],
@@ -113,13 +109,45 @@ const project: EthereumProject = {
           {
             kind: EthereumHandlerKind.Event,
             handler: "handleSafeWrite",
-            filter: {
-              /**
-               * Follows standard log filters https://docs.ethers.io/v5/concepts/events/
-               * address: "0x60781C2586D68229fde47564546784ab3fACA982"
-               */
+            filter: {              
               topics: [
                 "Write(address requester, address nftCollection, uint256 tokenId, bytes32 key, bytes value)",
+              ],
+            },
+          },
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleCompose",
+            filter: {              
+              topics: [
+                "Compose(address srcCollection, uint256 srcTokenId, address descCollection, uint256 descTokenId, bytes32[] keys)",
+              ],
+            },
+          },
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleDerive",
+            filter: {              
+              topics: [
+                "Derive(address underlyingCollection, uint256 underlyingTokenId, address derivedCollection, uint256 derivedTokenId, uint256 startTime, uint256 endTime)",
+              ],
+            },
+          },
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleReclaim",
+            filter: {              
+              topics: [
+                "Reclaim(address underlyingCollection, uint256 underlyingTokenId, address derivedCollection, uint256 derivedTokenId)",
+              ],
+            },
+          },
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleTransferDerived",
+            filter: {              
+              topics: [
+                "Transfer(address from, address to, uint256 tokenId)",
               ],
             },
           },
@@ -140,7 +168,7 @@ const project: EthereumProject = {
         handlers: [     
           {
             kind: EthereumHandlerKind.Event,
-            handler: "handlerTransfer",
+            handler: "handleTransfer",
             filter: {              
               topics: [
                 "Transfer(address from, address to, uint256 tokenId)",

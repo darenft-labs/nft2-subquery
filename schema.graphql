@@ -48,6 +48,8 @@ type NFT @entity {
   tokenId: BigInt!
   owner: String
   isBurned: Boolean
+  isDerived: Boolean
+  underlyingNFT: NFT
 }
 
 type DerivedAccount @entity {
