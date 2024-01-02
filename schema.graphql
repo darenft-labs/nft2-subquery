@@ -17,12 +17,6 @@ type DataRegistrySchema @entity {
   schema: String!
 }
 
-type NFT @entity {
-  id: ID!
-  collection: String!
-  tokenId: BigInt!
-}
-
 type DataRegistryNFTData @entity {
   id: ID!
   blockHeight: BigInt
@@ -45,6 +39,17 @@ type Collection721A @entity {
   blockHeight: BigInt
   address: String
   owner: String
+}
+
+type NFT @entity {
+  id: ID!
+  blockHeight: BigInt
+  collection: String!
+  tokenId: BigInt!
+  owner: String
+  isBurned: Boolean
+  isDerived: Boolean
+  underlyingNFT: NFT
 }
 
 type DerivedAccount @entity {
