@@ -43,7 +43,7 @@ const project: EthereumProject = {
   dataSources: [
     {
       kind: EthereumDatasourceKind.Runtime,
-      startBlock: 36321511,
+      startBlock: 36487056,
 
       options: {
         // Must be a key of assets
@@ -137,7 +137,16 @@ const project: EthereumProject = {
       assets: new Map([["erc721", { file: "./abis/erc721.abi.json" }]]),
       mapping: {
         file: "./dist/index.js",
-        handlers: [          
+        handlers: [     
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handlerTransfer",
+            filter: {              
+              topics: [
+                "Transfer(address from, address to, uint256 tokenId)",
+              ],
+            },
+          }, 
         ],
       },
     },
