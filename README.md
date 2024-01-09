@@ -115,6 +115,12 @@ $ docker-compose down
 $ sudo rm -rf .data/
 ```
 
+- Cleanup compiled source
+```bash
+$ sudo rm -rf ./dist/
+$ sudo rm -rf ./src/types/
+```
+
 - Delete deployment on Managed service
 ```bash
 $ SUBQL_ACCESS_TOKEN="<access-token>" subql deployment:delete -d \
@@ -124,6 +130,8 @@ $ SUBQL_ACCESS_TOKEN="<access-token>" subql deployment:delete -d \
 ```
 
 ## TODO
-
 - Multi-chains supported
+
+## License
+Copyright belongs to DareNFT - Alpha Waves PTE. LTD, 2023
 

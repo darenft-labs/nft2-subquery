@@ -18,6 +18,12 @@
         "internalType": "address",
         "name": "collection",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum IFactory.CollectionKind",
+        "name": "kind",
+        "type": "uint8"
       }
     ],
     "name": "CollectionCreated",

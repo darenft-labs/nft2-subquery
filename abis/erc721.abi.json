@@ -266,6 +266,19 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "burn",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "to",
         "type": "address"
@@ -576,6 +589,35 @@
       }
     ],
     "name": "safeMintBatchWithTokenUris",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "string[]",
+        "name": "tokenUris",
+        "type": "string[]"
+      },
+      {
+        "internalType": "uint96",
+        "name": "royaltyRate",
+        "type": "uint96"
+      }
+    ],
+    "name": "safeMintBatchWithTokenUrisAndRoyalty",
     "outputs": [
       {
         "internalType": "bool",

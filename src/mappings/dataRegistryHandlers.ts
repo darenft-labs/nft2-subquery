@@ -17,13 +17,14 @@ export async function handleSafeWrite(log: WriteLog): Promise<void> {
   const dataRegistry = await getDataRegistry(dataRegistryId);
 
   const data = DataRegistryNFTData.create({
-    id: `${dataRegistryId}-${log.args.nftCollection.toLowerCase()}-${log.args.tokenId.toBigInt()}-${log.args.key}`,
+    id: `${dataRegistryId}-${log.args.nftCollection.toLowerCase()}-${log.args.tokenId.toBigInt()}-${log.args.key.toLowerCase()}`,
     blockHeight: BigInt(log.blockNumber),
     dataRegistryId,
     collection: log.args.nftCollection.toLowerCase(),
     tokenId: log.args.tokenId.toBigInt(),
-    key: log.args.key,
-    value: log.args.value,
+    key: log.args.key.toLowerCase(),
+    value: log.args.value.toLowerCase(),
+    txHash: log.transactionHash.toLowerCase(),
   });
 
   await data.save();
@@ -40,10 +41,8 @@ export async function handleCompose(log: ComposeLog): Promise<void> {
   const destCollection = log.args.descCollection;
   const destTokenId = log.args.descTokenId.toBigInt();
   
-  logger.info(`Keys ${log.args["keys"]} - Keys length ${log.args["keys"].length}`);
-  for (let j=0;j<log.args["keys"].length; j++) {
-    logger.info(`Compose key ${log.args["keys"][j]}`);
-    await composeNFTDataByKey(dataRegistryId, log.args.srcCollection, log.args.srcTokenId.toBigInt(), log.args.descCollection, log.args.descTokenId.toBigInt(), log.args["keys"][j]);
+  for (let j=0;j<log.args.keyNames.length; j++) {
+    await composeNFTDataByKey(dataRegistryId, log.args.srcCollection, log.args.srcTokenId.toBigInt(), log.args.descCollection, log.args.descTokenId.toBigInt(), log.args.keyNames[j], log);
   }
 }
 
@@ -76,7 +75,7 @@ export async function handleTransferDerived(log: TransferLog): Promise<void> {
 
   logger.info(`NFT ${log.args.tokenId} is transfered on collection ${log.address}`);
   const nft = await getNFT(log.address, log.args.tokenId.toBigInt());
-  nft.owner = log.args.to;
+  nft.owner = log.args.to.toLowerCase();
 
   if (log.args.to == ADDRESS_ZERO) {
     nft.isBurned = true;
@@ -97,23 +96,45 @@ async function getDataRegistry(id: string): Promise<DataRegistry> {
   return dataRegistry;
 }
 
-async function composeNFTDataByKey(registry: string, srcCollection: string, srcTokenId: bigint, destCollection: string, destTokenId: bigint, key: string): Promise<boolean> {
-  let srcData = await DataRegistryNFTData.get(getDataId(registry, srcCollection, srcTokenId, key));
-  let destData = await DataRegistryNFTData.get(getDataId(registry, destCollection, destTokenId, key));
-  if (srcData && destData) {
-    logger.info(`Compose key ${key} from source ${srcCollection}-${srcTokenId} to dest ${destCollection}-${destTokenId}`);
-    destData.value = srcData.value;
-    await destData.save();
+async function composeNFTDataByKey(registry: string, srcCollection: string, srcTokenId: bigint, destCollection: string, destTokenId: bigint, key: string, log:ComposeLog): Promise<boolean> {
+  const srcId = getDataId(registry, srcCollection, srcTokenId, key);
+  const destId = getDataId(registry, destCollection, destTokenId, key);
+  const dataRegistryId = registry.toLowerCase();
 
-    srcData.value = "";
-    await srcData.save();
-    return true;
-  } 
-  logger.error(`Source or Dest data of key ${key} is not found`);
-  return false;
+  let srcData = await DataRegistryNFTData.get(srcId);
+  let destData = await DataRegistryNFTData.get(destId);
+
+  if (!srcData) {
+    logger.error(`Source data ${srcId} is not found`);
+    return false;
+  }
+
+  if (!destData) {
+    logger.info(`Create destination data ${destId}`);
+    destData = DataRegistryNFTData.create({
+      id: destId,
+      blockHeight: BigInt(log.blockNumber),
+      dataRegistryId,
+      collection: destCollection.toLowerCase(),
+      tokenId: destTokenId,
+      key: key.toLowerCase(),
+      txHash: log.transactionHash.toLowerCase(),
+    });
+  
+    await destData.save();
+  }
+
+  logger.info(`Compose key ${key} from source ${srcCollection}-${srcTokenId} to dest ${destCollection}-${destTokenId}`);
+  destData.value = srcData.value;
+  await destData.save();
+
+  srcData.key = "";
+  srcData.value = "";
+  await srcData.save();
+  return true;
 }
 
 function getDataId(registry: string, collection: string, tokenId: bigint, key: string): string {
-  return `${registry}-${collection.toLowerCase()}-${tokenId}-${key}`;
+  return `${registry.toLowerCase()}-${collection.toLowerCase()}-${tokenId}-${key.toLowerCase()}`;
 }
 
