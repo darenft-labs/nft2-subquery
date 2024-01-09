@@ -1,10 +1,10 @@
 # NFT2.0 SubQuery
 
 The [SubQuery](https://subquery.network) project for NFT2.0 protocol. This includes indexer for all protocol originated (onchain) events, including but not limited to:
-- Factory events: create data-registries, collections, derived-accounts
-- Data-registry events: write, set schema, compose, derive, reclaim
-- Collection events: mint, burn, transfer
-- Derived-account: claim royalty
+> - Factory events: create data-registries, collections, derived-accounts
+> - Data-registry events: write, set schema, compose, derive, reclaim
+> - Collection events: mint, burn, transfer
+> - Derived-account: claim royalty
 
 ## Prerequisites
 - [NodeJS v18.x](https://nodejs.org/en/blog/release/v18.17.0)
