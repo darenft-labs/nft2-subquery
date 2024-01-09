@@ -65,6 +65,7 @@ export async function handleReclaim(log: ReclaimLog): Promise<void> {
   const underlying = await getNFT(log.args.underlyingCollection, log.args.underlyingTokenId.toBigInt());
   const derived = await getNFT(log.args.derivedCollection, log.args.derivedTokenId.toBigInt());
 
+  derived.blockHeight = BigInt(log.blockNumber);
   derived.isBurned = true;  
   await derived.save();
 }
@@ -75,6 +76,7 @@ export async function handleTransferDerived(log: TransferLog): Promise<void> {
 
   logger.info(`NFT ${log.args.tokenId} is transfered on collection ${log.address}`);
   const nft = await getNFT(log.address, log.args.tokenId.toBigInt());
+  nft.blockHeight = BigInt(log.blockNumber);
   nft.owner = log.args.to.toLowerCase();
 
   if (log.args.to == ADDRESS_ZERO) {
