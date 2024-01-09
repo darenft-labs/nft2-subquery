@@ -43,7 +43,7 @@ const project: EthereumProject = {
   dataSources: [
     {
       kind: EthereumDatasourceKind.Runtime,
-      startBlock: 36494682,
+      startBlock: 36686472,
 
       options: {
         // Must be a key of assets
@@ -57,11 +57,7 @@ const project: EthereumProject = {
           {
             kind: EthereumHandlerKind.Event,
             handler: "handleDataRegistryCreated",
-            filter: {
-              /**
-               * Follows standard log filters https://docs.ethers.io/v5/concepts/events/
-               * address: "0x60781C2586D68229fde47564546784ab3fACA982"
-               */
+            filter: {              
               topics: [
                 "DataRegistryCreated(address dapp, address registry, string dappURI)",
               ],
@@ -70,13 +66,9 @@ const project: EthereumProject = {
           {
             kind: EthereumHandlerKind.Event,
             handler: "handleCollectionCreated",
-            filter: {
-              /**
-               * Follows standard log filters https://docs.ethers.io/v5/concepts/events/
-               * address: "0x60781C2586D68229fde47564546784ab3fACA982"
-               */
+            filter: {              
               topics: [
-                "CollectionCreated(address owner, address collection)",
+                "CollectionCreated(address owner, address collection, uint8 kind)",
               ],
             },
           },
@@ -177,22 +169,7 @@ const project: EthereumProject = {
           }, 
         ],
       },
-    },
-    {
-      name: "Collection721A",
-      kind: EthereumDatasourceKind.Runtime,      
-
-      options: {
-        // Must be a key of assets
-        abi: "erc721a",        
-      },
-      assets: new Map([["erc721a", { file: "./abis/erc721a.abi.json" }]]),
-      mapping: {
-        file: "./dist/index.js",
-        handlers: [          
-        ],
-      },
-    },
+    },    
     {
       name: "DerivedAccount",
       kind: EthereumDatasourceKind.Runtime,      
@@ -204,7 +181,16 @@ const project: EthereumProject = {
       assets: new Map([["derived-account", { file: "./abis/derived-account.abi.json" }]]),
       mapping: {
         file: "./dist/index.js",
-        handlers: [          
+        handlers: [
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleRoyaltyClaimed",
+            filter: {              
+              topics: [
+                "RoyaltyClaimed(address receiver, address requestToken, uint256 amount)",
+              ],
+            },
+          },       
         ],
       },
     },

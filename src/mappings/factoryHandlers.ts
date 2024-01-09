@@ -16,7 +16,7 @@ export async function handleDataRegistryCreated(log: DataRegistryCreatedLog): Pr
   const item = DataRegistry.create({
     id: registryAddr,
     blockHeight: BigInt(log.blockNumber),
-    dapp: log.args.dapp,
+    dapp: log.args.dapp.toLowerCase(),
     address: registryAddr,
     uri: log.args.dappURI,
   });
@@ -39,6 +39,7 @@ export async function handleCollectionCreated(log: CollectionCreatedLog): Promis
     blockHeight: BigInt(log.blockNumber),
     address: collectionAddr,
     owner: log.args.owner.toLowerCase(),
+    kind: log.args.kind,
   });
 
   await item.save();
@@ -58,7 +59,7 @@ export async function handleDerivedAccountCreated(log: DerivedAccountCreatedLog)
     id: addr,
     blockHeight: BigInt(log.blockNumber),
     address: addr,
-    underlyingCollection: log.args.underlyingCollection,
+    underlyingCollection: log.args.underlyingCollection.toLowerCase(),
     underlyingTokenId: log.args.underlyingTokenId.toBigInt(),
   });
 

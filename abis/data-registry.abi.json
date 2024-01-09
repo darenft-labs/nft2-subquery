@@ -79,7 +79,7 @@
       {
         "indexed": false,
         "internalType": "bytes32[]",
-        "name": "keys",
+        "name": "keyNames",
         "type": "bytes32[]"
       }
     ],
@@ -479,7 +479,7 @@
       },
       {
         "internalType": "bytes32[]",
-        "name": "keys",
+        "name": "keyNames",
         "type": "bytes32[]"
       }
     ],

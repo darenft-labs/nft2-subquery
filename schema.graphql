@@ -20,11 +20,12 @@ type DataRegistrySchema @entity {
 type DataRegistryNFTData @entity {
   id: ID!
   blockHeight: BigInt
+  txHash: String
   dataRegistry: DataRegistry!
   collection: String!
   tokenId: BigInt!
-  key: String!
-  value: String!
+  key: String
+  value: String  
 }
 
 type Collection @entity {
@@ -32,13 +33,7 @@ type Collection @entity {
   blockHeight: BigInt
   address: String
   owner: String
-}
-
-type Collection721A @entity {
-  id: ID!
-  blockHeight: BigInt
-  address: String
-  owner: String
+  kind: Int
 }
 
 type NFT @entity {
@@ -58,4 +53,14 @@ type DerivedAccount @entity {
   address: String
   underlyingCollection: String
   underlyingTokenId: BigInt
+}
+
+type DerivedAccountRoyaltyClaimed @entity {
+  id: ID!
+  blockHeight: BigInt
+  txHash: String
+  derivedAccount: DerivedAccount!
+  token: String
+  amount: BigInt
+  receiver: String
 }
