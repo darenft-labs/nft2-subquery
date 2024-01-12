@@ -28,6 +28,16 @@ type DataRegistryNFTData @entity {
   value: String  
 }
 
+type DataRegistryNFTInscription @entity {
+  id: ID!
+  blockHeight: BigInt
+  txHash: String
+  dataRegistry: DataRegistry!
+  collection: String!
+  tokenId: BigInt!
+  metadata: String  
+}
+
 type Collection @entity {
   id: ID!
   blockHeight: BigInt

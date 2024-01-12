@@ -43,7 +43,7 @@ const project: EthereumProject = {
   dataSources: [
     {
       kind: EthereumDatasourceKind.Runtime,
-      startBlock: 36686472,
+      startBlock: 36695730,
 
       options: {
         // Must be a key of assets
@@ -141,6 +141,13 @@ const project: EthereumProject = {
               topics: [
                 "Transfer(address from, address to, uint256 tokenId)",
               ],
+            },
+          },
+          {
+            kind: EthereumHandlerKind.Call,
+            handler: "handleInscribeCall",
+            filter: {              
+              function: "inscribe(address collection, uint256 tokenId, bytes calldata metadata)",
             },
           },
         ],

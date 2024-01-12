@@ -1,10 +1,17 @@
-import { DataRegistry, NFT, DataRegistryNFTData } from "../types";
+import { 
+  DataRegistry, 
+  NFT, 
+  DataRegistryNFTData,
+  DataRegistryNFTInscription,
+} from "../types";
+
 import {
   WriteLog,
   ComposeLog,
   DeriveLog,
   ReclaimLog,
   TransferLog,
+  InscribeTransaction,
 } from "../types/abi-interfaces/DataRegistryAbi";
 import assert, { deepStrictEqual } from "assert";
 import { getNFT, ADDRESS_ZERO } from "./utils";
@@ -86,12 +93,37 @@ export async function handleTransferDerived(log: TransferLog): Promise<void> {
   await nft.save();
 }
 
+export async function handleInscribeCall(tx: InscribeTransaction): Promise<void> {
+  logger.info(`New Inscribe call at block ${tx.blockNumber}`);
+  const collection = await tx.args![0];
+  const tokenId = await tx.args![1];
+  const metadata = await tx.args![2];
+
+  const dataRegistry = await getDataRegistry(tx.to);
+  if (!dataRegistry){
+    logger.error(`Data registry ${tx.to} is not found`);
+    return;
+  }
+
+  logger.info(`Create inscription for token ${collection}-${tokenId}`);
+  const inscription = DataRegistryNFTInscription.create({
+    id: `${tx.hash}-${tx.transactionIndex}`,
+    blockHeight: BigInt(tx.blockNumber),
+    txHash: tx.hash,
+    dataRegistryId: dataRegistry.id,
+    collection: collection.toLowerCase(),
+    tokenId: BigInt(tokenId.toString()),
+    metadata: metadata.toString(),
+  });
+  await inscription.save();
+}
+
 async function getDataRegistry(id: string): Promise<DataRegistry> {
-  let dataRegistry = await DataRegistry.get(id);
+  let dataRegistry = await DataRegistry.get(id.toLowerCase());
 
   if (!dataRegistry) {
     dataRegistry = await DataRegistry.create({
-      id: id      
+      id: id.toLowerCase()      
     });
   }
 
