@@ -54,7 +54,7 @@ const project: EthereumProject = {
     {
       kind: EthereumDatasourceKind.Runtime,
       //startBlock: 29682630, // avax-test
-      startBlock: 37379610, // bnb-test
+      startBlock: 36321511, // bnb-test
 
       options: {
         // Must be a key of assets

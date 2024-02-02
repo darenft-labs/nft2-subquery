@@ -119,15 +119,8 @@ export async function handleInscribeCall(tx: InscribeTransaction): Promise<void>
   await inscription.save();
 }
 
-async function getDataRegistry(id: string): Promise<DataRegistry> {
+async function getDataRegistry(id: string): Promise<DataRegistry | undefined> {
   let dataRegistry = await DataRegistry.get(id.toLowerCase());
-
-  if (!dataRegistry) {
-    dataRegistry = await DataRegistry.create({
-      id: id.toLowerCase()      
-    });
-  }
-
   return dataRegistry;
 }
 
@@ -179,8 +172,12 @@ export async function handleURIUpdated(log: URIUpdatedLog): Promise<void> {
 
   const dataRegistryId = log.address.toLowerCase();
   const dataRegistry = await getDataRegistry(dataRegistryId);
+  if (dataRegistry == undefined) {
+    logger.error(`DataRegistry ${dataRegistryId} not found`);
+    return;
+  }
 
-  dataRegistry.uri = log.args.uri
-  await dataRegistry.save()
+  dataRegistry.uri = log.args.uri;
+  await dataRegistry.save();
 }
 
