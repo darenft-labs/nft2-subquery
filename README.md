@@ -2,7 +2,7 @@
 
 The [SubQuery](https://subquery.network) project for NFT2.0 protocol. This includes indexer for all protocol originated (onchain) events, including but not limited to:
 > 1. Factory events: create data-registries, collections, derived-accounts
-> 2. Data-registry events: write, set schema, compose, derive, reclaim
+> 2. Data-registry events: write, compose, derive, reclaim, inscribe
 > 3. Collection events: mint, burn, transfer
 > 4. Derived-account: claim royalty
 
@@ -23,11 +23,13 @@ $ yarn install
 ```bash
 $ yarn codegen
 ```
+*This command will generate types manifest in /src/types folder*
 
 - Compile code
 ```bash
 $ yarn build
 ```
+*This command will compile TS code and store artifacts to /dist folder, every update logic, including configuration in project.ts would need to rerun this command*
 
 ## Run locally
 - Spin up infrastructure stack, which includes PostgreSQL, Subquery node, GraphQL engine by using docker compose
@@ -129,8 +131,11 @@ $ SUBQL_ACCESS_TOKEN="<access-token>" subql deployment:delete -d \
 --deploymentID "<deployment-id>"
 ```
 
-## TODO
-- Multi-chains supported
+## Troubleshoot
+- Subquery-node unhealthy upon docker-compose start, it might occur due to RPC endpoint rate limit, which leads to failure on sync up latest chain status, the solution for this issue is simply waiting for RPC connection success, by monitoring subquery-node logs
+```bash
+$ docker logs -f <subquery-node-container>
+```
 
 ## License
 Copyright belongs to DareNFT - Alpha Waves PTE. LTD, 2023

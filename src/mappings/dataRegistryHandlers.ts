@@ -12,6 +12,7 @@ import {
   ReclaimLog,
   TransferLog,
   InscribeTransaction,
+  URIUpdatedLog,
 } from "../types/abi-interfaces/DataRegistryAbi";
 import assert, { deepStrictEqual } from "assert";
 import { getNFT, ADDRESS_ZERO } from "./utils";
@@ -118,15 +119,8 @@ export async function handleInscribeCall(tx: InscribeTransaction): Promise<void>
   await inscription.save();
 }
 
-async function getDataRegistry(id: string): Promise<DataRegistry> {
+async function getDataRegistry(id: string): Promise<DataRegistry | undefined> {
   let dataRegistry = await DataRegistry.get(id.toLowerCase());
-
-  if (!dataRegistry) {
-    dataRegistry = await DataRegistry.create({
-      id: id.toLowerCase()      
-    });
-  }
-
   return dataRegistry;
 }
 
@@ -170,5 +164,20 @@ async function composeNFTDataByKey(registry: string, srcCollection: string, srcT
 
 function getDataId(registry: string, collection: string, tokenId: bigint, key: string): string {
   return `${registry.toLowerCase()}-${collection.toLowerCase()}-${tokenId}-${key.toLowerCase()}`;
+}
+
+export async function handleURIUpdated(log: URIUpdatedLog): Promise<void> {
+  logger.info(`New URI-Updated log at block ${log.blockNumber}`);
+  assert(log.args, "No log.args");
+
+  const dataRegistryId = log.address.toLowerCase();
+  const dataRegistry = await getDataRegistry(dataRegistryId);
+  if (dataRegistry == undefined) {
+    logger.error(`DataRegistry ${dataRegistryId} not found`);
+    return;
+  }
+
+  dataRegistry.uri = log.args.uri;
+  await dataRegistry.save();
 }
 
