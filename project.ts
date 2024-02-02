@@ -29,7 +29,12 @@ const project: EthereumProject = {
      * chainId is the EVM Chain ID, for BSC testnet this is 97
      * https://chainlist.org/chain/97
      */
+    // AVAX testnet
+    //chainId: "43113",
+    
+    // BSC testnet
     chainId: "97",
+
     /**
      * These endpoint(s) should be public non-pruned archive node
      * We recommend providing more than one endpoint for improved reliability, performance, and uptime
@@ -38,17 +43,24 @@ const project: EthereumProject = {
      * If you use a rate limited endpoint, adjust the --batch-size and --workers parameters
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
-    endpoint: ["https://data-seed-prebsc-1-s2.bnbchain.org:8545","https://data-seed-prebsc-1-s1.bnbchain.org:8545","https://data-seed-prebsc-2-s1.bnbchain.org:8545","https://data-seed-prebsc-2-s2.bnbchain.org:8545"],
+
+    // AVAX testnet
+    //endpoint: ["https://api.avax-test.network/ext/bc/C/rpc"],
+
+    // BSC testnet
+    endpoint: ["https://data-seed-prebsc-1-s2.bnbchain.org:8545"],
   },
   dataSources: [
     {
       kind: EthereumDatasourceKind.Runtime,
-      startBlock: 36695730,
+      //startBlock: 29682630, // avax-test
+      startBlock: 37379610, // bnb-test
 
       options: {
         // Must be a key of assets
         abi: "factory",
-        address: "0x702067e6010E48f0eEf11c1E06f06aaDb04734e2",
+        //address: "0xf4943e8cC945071C778EE25ad0BE5857eD638556", // avax-test
+        address: "0x702067e6010E48f0eEf11c1E06f06aaDb04734e2", // bnb-test
       },
       assets: new Map([["factory", { file: "./abis/factory.abi.json" }]]),
       mapping: {
@@ -148,6 +160,15 @@ const project: EthereumProject = {
             handler: "handleInscribeCall",
             filter: {              
               function: "inscribe(address collection, uint256 tokenId, bytes calldata metadata)",
+            },
+          },
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleURIUpdated",
+            filter: {              
+              topics: [
+                "URIUpdated(string uri)",
+              ],
             },
           },
         ],
