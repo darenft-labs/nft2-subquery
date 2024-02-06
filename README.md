@@ -90,6 +90,30 @@ $ curl -g -X POST -H "Content-type: application/json" \
 ```
 
 ## Publish
+- Configure chain in project.ts
+```typescript
+network{
+  chainId: "chain_id",
+  endpoint: "rpc_endpoint",
+},
+dataSources: [
+  {
+    kind: EthereumDatasourceKind.Runtime,
+    startBlock: <start-block-of-factory>,
+    options: {
+        abi: "factory",
+        address: "factory_address",
+    },
+  }
+]
+```
+
+- Compile code
+```bash
+$ yarn build
+```
+*Verify project.yaml upon compilation to confirm chain configured properly.*
+
 - Publish project manifest to IPFS
 ```bash
 $ SUBQL_ACCESS_TOKEN="<access-token>" subql publish

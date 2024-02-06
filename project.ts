@@ -30,10 +30,10 @@ const project: EthereumProject = {
      * https://chainlist.org/chain/97
      */
     // AVAX testnet
-    //chainId: "43113",
+    chainId: "43113",
     
     // BSC testnet
-    chainId: "97",
+    //chainId: "97",
 
     /**
      * These endpoint(s) should be public non-pruned archive node
@@ -45,22 +45,22 @@ const project: EthereumProject = {
      */
 
     // AVAX testnet
-    //endpoint: ["https://api.avax-test.network/ext/bc/C/rpc"],
+    endpoint: ["https://api.avax-test.network/ext/bc/C/rpc"],
 
     // BSC testnet
-    endpoint: ["https://data-seed-prebsc-1-s2.bnbchain.org:8545"],
+    //endpoint: ["https://data-seed-prebsc-1-s2.bnbchain.org:8545"],
   },
   dataSources: [
     {
       kind: EthereumDatasourceKind.Runtime,
-      //startBlock: 29682630, // avax-test
-      startBlock: 36321511, // bnb-test
+      startBlock: 29293284, // avax-test
+      //startBlock: 37463735, // bnb-test
 
       options: {
         // Must be a key of assets
         abi: "factory",
-        //address: "0xf4943e8cC945071C778EE25ad0BE5857eD638556", // avax-test
-        address: "0x702067e6010E48f0eEf11c1E06f06aaDb04734e2", // bnb-test
+        address: "0xf4943e8cC945071C778EE25ad0BE5857eD638556", // avax-test
+        //address: "0x702067e6010E48f0eEf11c1E06f06aaDb04734e2", // bnb-test
       },
       assets: new Map([["factory", { file: "./abis/factory.abi.json" }]]),
       mapping: {
