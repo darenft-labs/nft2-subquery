@@ -11,6 +11,7 @@ type DataRegistry @entity {
   address: String
   dapp: String
   uri: String
+  version: String  
 }
 
 type DataRegistrySchema @entity {

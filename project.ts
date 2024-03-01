@@ -33,7 +33,7 @@ const project: EthereumProject = {
      * https://chainlist.org/chain/97
      */
 
-    chainId: process.env.CHAIN_ID,
+    chainId: process.env.CHAIN_ID!,
 
     /**
      * These endpoint(s) should be public non-pruned archive node
@@ -44,7 +44,7 @@ const project: EthereumProject = {
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
 
-    endpoint: [process.env.RPC_ENDPOINT],
+    endpoint: [process.env.RPC_ENDPOINT!],
   },
   dataSources: [
     {
@@ -53,10 +53,10 @@ const project: EthereumProject = {
 
       options: {
         // Must be a key of assets
-        abi: "factory",
+        abi: "factory-abi",
         address: process.env.PROTOCOL_FACTORY_ADDRESS,
       },
-      assets: new Map([["factory", { file: "./abis/factory.abi.json" }]]),
+      assets: new Map([["factory-abi", { file: "./abis/factory.abi.json" }]]),
       mapping: {
         file: "./dist/index.js",
         handlers: [          
@@ -65,7 +65,16 @@ const project: EthereumProject = {
             handler: "handleDataRegistryCreated",
             filter: {              
               topics: [
-                "DataRegistryCreated(address dapp, address registry, string dappURI)",
+                "DataRegistryCreated(address indexed dapp, address indexed registry, string dappURI)",
+              ],
+            },
+          },
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleDataRegistryV2Created",
+            filter: {              
+              topics: [
+                "DataRegistryV2Created(address indexed dapp, address indexed registry, string dappURI)",
               ],
             },
           },
@@ -96,10 +105,10 @@ const project: EthereumProject = {
 
       options: {
         // Must be a key of assets
-        abi: "marketplace_abi",        
+        abi: "marketplace-abi",        
         address: process.env.MARKETPLACE_ADDRESS,
       },
-      assets: new Map([["marketplace_abi", { file: "./abis/marketplace.abi.json" }]]),
+      assets: new Map([["marketplace-abi", { file: "./abis/marketplace.abi.json" }]]),
       mapping: {
         file: "./dist/index.js",
         handlers: [          
@@ -159,9 +168,9 @@ const project: EthereumProject = {
 
       options: {
         // Must be a key of assets
-        abi: "data-registry",        
+        abi: "data-registry-abi",        
       },
-      assets: new Map([["data-registry", { file: "./abis/data-registry.abi.json" }]]),
+      assets: new Map([["data-registry-abi", { file: "./abis/data-registry.abi.json" }]]),
       mapping: {
         file: "./dist/index.js",
         handlers: [          
@@ -173,7 +182,7 @@ const project: EthereumProject = {
                 "Write(address requester, address nftCollection, uint256 tokenId, bytes32 key, bytes value)",
               ],
             },
-          },
+          },          
           {
             kind: EthereumHandlerKind.Event,
             handler: "handleCompose",
@@ -209,14 +218,76 @@ const project: EthereumProject = {
                 "Transfer(address from, address to, uint256 tokenId)",
               ],
             },
-          },
+          },          
           {
-            kind: EthereumHandlerKind.Call,
-            handler: "handleInscribeCall",
+            kind: EthereumHandlerKind.Event,
+            handler: "handleURIUpdated",
             filter: {              
-              function: "inscribe(address collection, uint256 tokenId, bytes calldata metadata)",
+              topics: [
+                "URIUpdated(string uri)",
+              ],
             },
           },
+        ],
+      },
+    },
+    {
+      name: "DataRegistryV2",
+      kind: EthereumDatasourceKind.Runtime,      
+
+      options: {
+        // Must be a key of assets
+        abi: "data-registry-v2-abi",        
+      },
+      assets: new Map([["data-registry-v2-abi", { file: "./abis/data-registry-v2.abi.json" }]]),
+      mapping: {
+        file: "./dist/index.js",
+        handlers: [          
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleWriteBatch",
+            filter: {              
+              topics: [
+                "WriteBatch(address collection, uint256 startId, uint256 endId, bytes32 key, bytes value)",
+              ],
+            },
+          },          
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleCompose",
+            filter: {              
+              topics: [
+                "Compose(address srcCollection, uint256 srcTokenId, address descCollection, uint256 descTokenId, bytes32[] keys)",
+              ],
+            },
+          },
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleDerive",
+            filter: {              
+              topics: [
+                "Derive(address underlyingCollection, uint256 underlyingTokenId, address derivedCollection, uint256 derivedTokenId, uint256 startTime, uint256 endTime)",
+              ],
+            },
+          },
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleReclaim",
+            filter: {              
+              topics: [
+                "Reclaim(address underlyingCollection, uint256 underlyingTokenId, address derivedCollection, uint256 derivedTokenId)",
+              ],
+            },
+          },
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleTransferDerived",
+            filter: {              
+              topics: [
+                "Transfer(address from, address to, uint256 tokenId)",
+              ],
+            },
+          },          
           {
             kind: EthereumHandlerKind.Event,
             handler: "handleURIUpdated",

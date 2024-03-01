@@ -21,7 +21,7 @@
       },
       {
         "indexed": false,
-        "internalType": "enum IFactory.CollectionKind",
+        "internalType": "enum CollectionKind",
         "name": "kind",
         "type": "uint8"
       }
@@ -33,13 +33,13 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
         "name": "dapp",
         "type": "address"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
         "name": "registry",
         "type": "address"
@@ -52,6 +52,31 @@
       }
     ],
     "name": "DataRegistryCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "dapp",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "registry",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "dappURI",
+        "type": "string"
+      }
+    ],
+    "name": "DataRegistryV2Created",
     "type": "event"
   },
   {
@@ -374,9 +399,9 @@
             "type": "bool"
           },
           {
-            "internalType": "bool",
+            "internalType": "enum FreeMintableKind",
             "name": "isFreeMintable",
-            "type": "bool"
+            "type": "uint8"
           },
           {
             "internalType": "bool",
@@ -384,12 +409,12 @@
             "type": "bool"
           }
         ],
-        "internalType": "struct IFactory.CollectionSettings",
+        "internalType": "struct CollectionSettings",
         "name": "settings",
         "type": "tuple"
       },
       {
-        "internalType": "enum IFactory.CollectionKind",
+        "internalType": "enum CollectionKind",
         "name": "kind",
         "type": "uint8"
       }
@@ -414,6 +439,42 @@
       }
     ],
     "name": "createDataRegistry",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "registry",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "dappUri",
+        "type": "string"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "disableComposable",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "disableDerivable",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct DataRegistrySettings",
+        "name": "settings",
+        "type": "tuple"
+      }
+    ],
+    "name": "createDataRegistryV2",
     "outputs": [
       {
         "internalType": "address",
@@ -591,6 +652,11 @@
       {
         "internalType": "address",
         "name": "erc721Impl",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "dataRegistryV2Impl",
         "type": "address"
       }
     ],
