@@ -65,7 +65,7 @@ const project: EthereumProject = {
             handler: "handleDataRegistryCreated",
             filter: {              
               topics: [
-                "DataRegistryCreated(address indexed dapp, address indexed registry, string dappURI)",
+                "DataRegistryCreated(address dapp, address registry, string dappURI)",
               ],
             },
           },

@@ -17,46 +17,52 @@ import assert from "assert";
 
 export async function handleDataRegistryCreated(log: DataRegistryCreatedLog): Promise<void> {
   logger.info(`DataRegistryCreatedLog at block ${log.blockNumber}`);
-  assert(log.args, "No log.args");
 
-  const registryAddr = log.args.registry.toLowerCase();
+  if (log.args != undefined) {
+    const registryAddr = log.args.registry.toLowerCase();
 
-  const item = DataRegistry.create({
-    id: registryAddr,
-    blockHeight: BigInt(log.blockNumber),
-    dapp: log.args.dapp.toLowerCase(),
-    address: registryAddr,
-    uri: log.args.dappURI,
-    version: "v1",
-  });
+    const item = DataRegistry.create({
+      id: registryAddr,
+      blockHeight: BigInt(log.blockNumber),
+      dapp: log.args.dapp.toLowerCase(),
+      address: registryAddr,
+      uri: log.args.dappURI,
+      version: "v1",
+    });
 
-  await item.save();
+    await item.save();
 
-  await createDataRegistryDatasource({
-    address: log.args.registry,
-  });
+    await createDataRegistryDatasource({
+      address: log.args.registry,
+    });
+  } else {
+    console.log(`logs invalid`);
+  }
 }
 
 export async function handleDataRegistryV2Created(log: DataRegistryV2CreatedLog): Promise<void> {
   logger.info(`DataRegistryV2CreatedLog at block ${log.blockNumber}`);
-  assert(log.args, "No log.args");
 
-  const registryAddr = log.args.registry.toLowerCase();
+  if (log.args != undefined) {
+    const registryAddr = log.args.registry.toLowerCase();
 
-  const item = DataRegistry.create({
-    id: registryAddr,
-    blockHeight: BigInt(log.blockNumber),
-    dapp: log.args.dapp.toLowerCase(),
-    address: registryAddr,
-    uri: log.args.dappURI,
-    version: "v2",
-  });
+    const item = DataRegistry.create({
+      id: registryAddr,
+      blockHeight: BigInt(log.blockNumber),
+      dapp: log.args.dapp.toLowerCase(),
+      address: registryAddr,
+      uri: log.args.dappURI,
+      version: "v2",
+    });
 
-  await item.save();
+    await item.save();
 
-  await createDataRegistryV2Datasource({
-    address: log.args.registry,
-  });
+    await createDataRegistryV2Datasource({
+      address: log.args.registry,
+    });
+  } else {
+    console.log(`logs invalid`);
+  }
 }
 
 export async function handleCollectionCreated(log: CollectionCreatedLog): Promise<void> {
