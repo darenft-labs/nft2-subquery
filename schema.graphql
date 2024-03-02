@@ -2,12 +2,16 @@
 # Add the `@index` or `@index(unique: true)` annotation after any non-key field
 # https://academy.subquery.network/build/graphql.html#indexing-by-non-primary-key-field
 
+############################################
+#                 NFT2.0
+############################################
 type DataRegistry @entity {
   id: ID!
   blockHeight: BigInt  
   address: String
   dapp: String
   uri: String
+  version: String  
 }
 
 type DataRegistrySchema @entity {
@@ -73,4 +77,61 @@ type DerivedAccountRoyaltyClaimed @entity {
   token: String
   amount: BigInt
   receiver: String
+}
+
+############################################
+#               MARKETPLACE
+############################################
+type TakerBid @entity {
+  id: ID!
+  blockHeight: BigInt
+  taker: String
+  maker: String
+  strategy: String
+  orderHash: String
+  orderNonce: BigInt
+  currency: String
+  collection: String
+  tokenId: BigInt
+  amount: BigInt
+  price: BigInt
+}
+
+type TakerAsk @entity {
+  id: ID!
+  blockHeight: BigInt
+  taker: String
+  maker: String
+  strategy: String
+  orderHash: String
+  orderNonce: BigInt
+  currency: String
+  collection: String
+  tokenId: BigInt
+  amount: BigInt
+  price: BigInt
+}
+
+type CancelAllOrders @entity {
+  id: ID!
+  blockHeight: BigInt
+  user: String
+  newMinNonce: BigInt
+}
+
+type CancelMultipleOrders @entity {
+  id: ID!
+  blockHeight: BigInt
+  user: String
+  orderNonces: [BigInt]
+}
+
+type RoyaltyPayment @entity {
+  id: ID!
+  blockHeight: BigInt
+  collection: String
+  tokenId: BigInt
+  royaltyRecipient: String
+  currency: String
+  amount: BigInt
 }

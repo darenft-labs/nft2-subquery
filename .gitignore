@@ -58,3 +58,7 @@ Thumbs.db
 .yarn
 
 .DS_Store
+
+.env
+.env.avax
+.env.bnb

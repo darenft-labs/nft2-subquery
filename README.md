@@ -12,11 +12,18 @@ The [SubQuery](https://subquery.network) project for NFT2.0 protocol. This inclu
 - [Docker Compose Plugin LTS](https://docs.docker.com/compose/install/linux/)
 - [SubQuery CLI](https://academy.subquery.network/quickstart/quickstart.html#_1-install-the-subquery-cli)
 
-## Install
+## Setup
 - Install dependencies
 ```bash
-$ yarn install
+$ yarn
 ```
+
+- Create .env file from template
+```bash
+$ cp .env.example .env
+```
+
+- Fulfill contract address, block number, etc to .env file
 
 ## Build
 - Generate types
