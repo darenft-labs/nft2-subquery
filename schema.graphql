@@ -79,6 +79,16 @@ type DerivedAccountRoyaltyClaimed @entity {
   receiver: String
 }
 
+type AddonsCollection @entity {
+  id: ID!
+  blockHeight: BigInt
+  contract: String
+  collection: String
+  kind: Int
+  campaignId: String
+  data: String
+}
+
 ############################################
 #               MARKETPLACE
 ############################################
