@@ -2,6 +2,7 @@ import {
   DataRegistry,
   Collection,
   DerivedAccount,
+  AddonsCollection,
   createDataRegistryDatasource,
   createCollectionDatasource,
   createDerivedAccountDatasource,
@@ -12,6 +13,7 @@ import {
   DataRegistryV2CreatedLog,
   CollectionCreatedLog,
   DerivedAccountCreatedLog,
+  AddonsCreatedLog,
 } from "../types/abi-interfaces/FactoryAbi";
 import assert from "assert";
 
@@ -66,7 +68,7 @@ export async function handleDataRegistryV2Created(log: DataRegistryV2CreatedLog)
 }
 
 export async function handleCollectionCreated(log: CollectionCreatedLog): Promise<void> {
-  logger.info(`New Collection-created log at block ${log.blockNumber}`);
+  logger.info(`CollectionCreatedLog at block ${log.blockNumber}`);
   assert(log.args, "No log.args");
 
   const collectionAddr = log.args.collection.toLowerCase();
@@ -87,7 +89,7 @@ export async function handleCollectionCreated(log: CollectionCreatedLog): Promis
 }
 
 export async function handleDerivedAccountCreated(log: DerivedAccountCreatedLog): Promise<void> {
-  logger.info(`New Derived-account-created log at block ${log.blockNumber}`);
+  logger.info(`DerivedAccountCreatedLog at block ${log.blockNumber}`);
   assert(log.args, "No log.args");
 
   const addr = log.args.derivedAccount.toLowerCase();
@@ -105,4 +107,23 @@ export async function handleDerivedAccountCreated(log: DerivedAccountCreatedLog)
   await createDerivedAccountDatasource({
     address: log.args.derivedAccount,
   });
+}
+
+export async function handleAddonsCreated(log: AddonsCreatedLog): Promise<void> {
+  logger.info(`AddonsCreatedLog at block ${log.blockNumber}`);
+  assert(log.args, "No log.args");
+
+  const addr = log.args.addons.toLowerCase();
+
+  const item = AddonsCollection.create({
+    id: addr,
+    blockHeight: BigInt(log.blockNumber),
+    contract: addr,
+    collection: log.args.collection.toLowerCase(),
+    kind: log.args.kind,
+    campaignId: log.args.campaignId,
+    data: log.args.data,
+  });
+
+  await item.save();
 }

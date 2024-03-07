@@ -96,6 +96,15 @@ const project: EthereumProject = {
               ],
             },
           },
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: "handleAddonsCreated",
+            filter: {              
+              topics: [
+                "AddonsCreated(address indexed collection, uint8 indexed kind, address addons, bytes32 campaignId, bytes data)",
+              ],
+            },
+          },
         ],
       },
     },
