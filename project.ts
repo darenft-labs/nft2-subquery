@@ -11,9 +11,9 @@ dotenv.config();
 const project: EthereumProject = {
   specVersion: "1.0.0",
   version: "0.0.1",
-  name: "bsc-testnet-starter",
+  name: "nft2-subquery",
   description:
-    "This project can be use as a starting point for developing your new BSC Testnet SubQuery project",
+    "The SubQuery indexer for NFT2.0 Protocol.",
   runner: {
     node: {
       name: "@subql/node-ethereum",
