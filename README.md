@@ -1,10 +1,11 @@
 # NFT2.0 SubQuery
 
-The [SubQuery](https://subquery.network) project for NFT2.0 protocol. This includes indexer for all protocol originated (onchain) events, including but not limited to:
+The [SubQuery](https://subquery.network) project for NFT2.0 protocol. This includes indexer for all protocol onchain events, including but not limited to:
 > 1. Factory events: create data-registries, collections, derived-accounts
-> 2. Data-registry events: write, compose, derive, reclaim, inscribe
-> 3. Collection events: mint, burn, transfer
-> 4. Derived-account: claim royalty
+> 2. Data-registry events: write, derive.
+> 3. Collection events: mint, burn, transfer.
+> 4. Derived-account events: claim royalty.
+> 5. Addons events: addons created.
 
 ## Prerequisites
 - [NodeJS v18.x](https://nodejs.org/en/blog/release/v18.17.0)
@@ -30,13 +31,14 @@ $ cp .env.example .env
 ```bash
 $ yarn codegen
 ```
-*This command will generate types manifest in /src/types folder*
+
+> *This command will generate types manifest in /src/types folder*
 
 - Compile code
 ```bash
 $ yarn build
 ```
-*This command will compile TS code and store artifacts to /dist folder, every update logic, including configuration in project.ts would need to rerun this command*
+> *This command will compile TS code and store artifacts to /dist folder, every update logic, including configuration in project.ts would need to rerun this command*
 
 ## Run locally
 - Spin up infrastructure stack, which includes PostgreSQL, Subquery node, GraphQL engine by using docker compose
@@ -44,7 +46,7 @@ $ yarn build
 $ docker-compose pull && docker-compose up
 ```
 
-- Access [GraphQL playground](http://localhost:3000/) to start query
+- Access [GraphQL playground local](http://localhost:3000/) to query
 
 ## Test
 - Execute UT
@@ -53,7 +55,7 @@ $ yarn test
 ```
 
 ## Query
-- Via local [GraphQL playground](http://localhost:3000/)
+- Via [GraphQL playground local](http://localhost:3000/)
 
 ```graphql
 query {
@@ -119,14 +121,14 @@ dataSources: [
 ```bash
 $ yarn build
 ```
-*Verify project.yaml upon compilation to confirm chain configured properly.*
+> *Verify project.yaml upon compilation to confirm chain configured properly.*
 
 - Publish project manifest to IPFS
 ```bash
 $ SUBQL_ACCESS_TOKEN="<access-token>" subql publish
 ```
 
-- The IPFS CID will be saved in .project-cid file in root folder
+> *The IPFS CID will be saved in .project-cid file in root folder*
 
 - Deployment can be done either via Console or SubQL CLI
 ```bash
@@ -169,5 +171,5 @@ $ docker logs -f <subquery-node-container>
 ```
 
 ## License
-Copyright belongs to DareNFT - Alpha Waves PTE. LTD, 2023
+Copyright belongs to [DareNFT - Alpha Waves PTE. LTD](https://darenft.com/), 2023
 
