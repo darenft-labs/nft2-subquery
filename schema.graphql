@@ -59,6 +59,7 @@ type NFT @entity {
   isBurned: Boolean
   isDerived: Boolean
   underlyingNFT: NFT
+  derivedKeys: [String]
 }
 
 type DerivedAccount @entity {

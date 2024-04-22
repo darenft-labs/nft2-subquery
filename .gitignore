@@ -52,15 +52,14 @@ Thumbs.db
 *.avi
 *.flv
 *.mov
-*.wmv
+*.wmvs
 
 .data
 .yarn
 
 .DS_Store
 
-.env
-.env.avax
-.env.bnb
+.env*
+!.env.example
 
 .project-cid
