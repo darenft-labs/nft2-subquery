@@ -44,7 +44,7 @@ const project: EthereumProject = {
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
 
-    endpoint: [process.env.RPC_ENDPOINT!],
+    endpoint: (process.env.RPC_ENDPOINT!).split(","),
   },
   dataSources: [
     {
@@ -108,72 +108,11 @@ const project: EthereumProject = {
         ],
       },
     },
-    {
-      kind: EthereumDatasourceKind.Runtime,
-      startBlock: parseInt(process.env.MARKETPLACE_START_BLOCK!),
-
-      options: {
-        // Must be a key of assets
-        abi: "marketplace-abi",        
-        address: process.env.MARKETPLACE_ADDRESS,
-      },
-      assets: new Map([["marketplace-abi", { file: "./abis/marketplace.abi.json" }]]),
-      mapping: {
-        file: "./dist/index.js",
-        handlers: [          
-          {
-            kind: EthereumHandlerKind.Event,
-            handler: "handleTakerBidLog",
-            filter: {              
-              topics: [
-                "TakerBid(bytes32 orderHash, uint256 orderNonce, address indexed taker, address indexed maker, address indexed strategy, address currency, address collection, uint256 tokenId, uint256 amount, uint256 price)",
-              ],
-            },
-          }, 
-          {
-            kind: EthereumHandlerKind.Event,
-            handler: "handleTakerAskLog",
-            filter: {              
-              topics: [
-                "TakerAsk(bytes32 orderHash, uint256 orderNonce, address indexed taker, address indexed maker, address indexed strategy, address currency, address collection, uint256 tokenId, uint256 amount, uint256 price)",
-              ],
-            },
-          }, 
-          {
-            kind: EthereumHandlerKind.Event,
-            handler: "handleCancelAllOrdersLog",
-            filter: {              
-              topics: [
-                "CancelAllOrders(address indexed user, uint256 newMinNonce)",
-              ],
-            },
-          },
-          {
-            kind: EthereumHandlerKind.Event,
-            handler: "handleCancelMultipleOrdersLog",
-            filter: {              
-              topics: [
-                "CancelMultipleOrders(address indexed user, uint256[] orderNonces)",
-              ],
-            },
-          },
-          {
-            kind: EthereumHandlerKind.Event,
-            handler: "handleRoyaltyPaymentLog",
-            filter: {              
-              topics: [
-                "RoyaltyPayment(address indexed collection, uint256 indexed tokenId, address indexed royaltyRecipient, address currency, uint256 amount)",
-              ],
-            },
-          },      
-        ],
-      },
-    },
   ],
   templates: [
     {
       name: "DataRegistry",
-      kind: EthereumDatasourceKind.Runtime,      
+      kind: EthereumDatasourceKind.Runtime,
 
       options: {
         // Must be a key of assets
