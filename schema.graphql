@@ -89,3 +89,60 @@ type AddonsCollection @entity {
   campaignId: String
   data: String
 }
+
+############################################
+#               MARKETPLACE
+############################################
+type TakerBid @entity {
+  id: ID!
+  blockHeight: BigInt
+  taker: String
+  maker: String
+  strategy: String
+  orderHash: String
+  orderNonce: BigInt
+  currency: String
+  collection: String
+  tokenId: BigInt
+  amount: BigInt
+  price: BigInt
+}
+
+type TakerAsk @entity {
+  id: ID!
+  blockHeight: BigInt
+  taker: String
+  maker: String
+  strategy: String
+  orderHash: String
+  orderNonce: BigInt
+  currency: String
+  collection: String
+  tokenId: BigInt
+  amount: BigInt
+  price: BigInt
+}
+
+type CancelAllOrders @entity {
+  id: ID!
+  blockHeight: BigInt
+  user: String
+  newMinNonce: BigInt
+}
+
+type CancelMultipleOrders @entity {
+  id: ID!
+  blockHeight: BigInt
+  user: String
+  orderNonces: [BigInt]
+}
+
+type RoyaltyPayment @entity {
+  id: ID!
+  blockHeight: BigInt
+  collection: String
+  tokenId: BigInt
+  royaltyRecipient: String
+  currency: String
+  amount: BigInt
+}
