@@ -7,11 +7,13 @@
 ############################################
 type DataRegistry @entity {
   id: ID!
-  blockHeight: BigInt  
+  chainId: Int! @index
+  blockHeight: BigInt
+  timestamp: BigInt
   address: String
   dapp: String
   uri: String
-  version: String  
+  version: String
 }
 
 type DataRegistrySchema @entity {
@@ -23,7 +25,9 @@ type DataRegistrySchema @entity {
 
 type DataRegistryNFTData @entity {
   id: ID!
+  chainId: Int! @index
   blockHeight: BigInt
+  timestamp: BigInt
   txHash: String
   dataRegistry: DataRegistry!
   collection: String!
@@ -44,7 +48,9 @@ type DataRegistryNFTInscription @entity {
 
 type Collection @entity {
   id: ID!
+  chainId: Int! @index
   blockHeight: BigInt
+  timestamp: BigInt
   address: String
   owner: String
   kind: Int
@@ -52,9 +58,12 @@ type Collection @entity {
 
 type NFT @entity {
   id: ID!
+  chainId: Int! @index
   blockHeight: BigInt
+  timestamp: BigInt
   collection: String!
   tokenId: BigInt!
+  tokenUri: String
   owner: String
   isBurned: Boolean
   isDerived: Boolean
@@ -64,7 +73,9 @@ type NFT @entity {
 
 type DerivedAccount @entity {
   id: ID!
+  chainId: Int! @index
   blockHeight: BigInt
+  timestamp: BigInt
   address: String
   underlyingCollection: String
   underlyingTokenId: BigInt
@@ -72,7 +83,9 @@ type DerivedAccount @entity {
 
 type DerivedAccountRoyaltyClaimed @entity {
   id: ID!
+  chainId: Int! @index
   blockHeight: BigInt
+  timestamp: BigInt
   txHash: String
   derivedAccount: DerivedAccount!
   token: String
@@ -82,7 +95,9 @@ type DerivedAccountRoyaltyClaimed @entity {
 
 type AddonsCollection @entity {
   id: ID!
+  chainId: Int! @index
   blockHeight: BigInt
+  timestamp: BigInt
   contract: String
   collection: String
   kind: Int
@@ -95,7 +110,9 @@ type AddonsCollection @entity {
 ############################################
 type TakerBid @entity {
   id: ID!
+  chainId: Int! @index
   blockHeight: BigInt
+  timestamp: BigInt
   taker: String
   maker: String
   strategy: String
@@ -110,7 +127,9 @@ type TakerBid @entity {
 
 type TakerAsk @entity {
   id: ID!
+  chainId: Int! @index
   blockHeight: BigInt
+  timestamp: BigInt
   taker: String
   maker: String
   strategy: String
@@ -125,21 +144,27 @@ type TakerAsk @entity {
 
 type CancelAllOrders @entity {
   id: ID!
+  chainId: Int! @index
   blockHeight: BigInt
+  timestamp: BigInt
   user: String
   newMinNonce: BigInt
 }
 
 type CancelMultipleOrders @entity {
   id: ID!
+  chainId: Int! @index
   blockHeight: BigInt
+  timestamp: BigInt
   user: String
   orderNonces: [BigInt]
 }
 
 type RoyaltyPayment @entity {
   id: ID!
+  chainId: Int! @index
   blockHeight: BigInt
+  timestamp: BigInt
   collection: String
   tokenId: BigInt
   royaltyRecipient: String
