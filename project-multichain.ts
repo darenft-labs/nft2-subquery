@@ -6,8 +6,9 @@ import {
 
 import dotenv from "dotenv";
 import path from "path";
-// Load the appropriate .env file
-const chainEnv = "bnb-testnet";
+
+// Need to load the appropriate .env file
+const chainEnv = "chain-name";
 const dotenvPath = path.resolve(process.cwd(), `.env.${chainEnv}`);
 dotenv.config({ path: dotenvPath });
 

@@ -4,4 +4,3 @@ query:
   version: '*'
 projects:
   - project-avax-testnet.yaml
-  - project-bnb-testnet.yaml

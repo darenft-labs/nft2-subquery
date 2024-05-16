@@ -62,4 +62,4 @@ Thumbs.db
 .env*
 !.env.example
 
-.project-cid
+.project*-cid
