@@ -1,11 +1,25 @@
 import { DerivedAccount, DerivedAccountRoyaltyClaimed } from "../types";
-import {
-  RoyaltyClaimedLog,  
-} from "../types/abi-interfaces/DerivedAccountAbi";
+import { RoyaltyClaimedLog } from "../types/abi-interfaces/DerivedAccountAbi";
 import assert from "assert";
-import { getNFT, ADDRESS_ZERO, getRoyaltyClaimedId } from "./utils";
+import { getRoyaltyClaimedId, CHAIN_LIST } from "./utils";
 
-export async function handleRoyaltyClaimed(log: RoyaltyClaimedLog) : Promise<void> {
+export async function handleRoyaltyClaimedAvax(log: RoyaltyClaimedLog) {
+  await handleRoyaltyClaimed(CHAIN_LIST.AVAX, log);
+}
+export async function handleRoyaltyClaimedBnb(log: RoyaltyClaimedLog) {
+  await handleRoyaltyClaimed(CHAIN_LIST.BNB, log);
+}
+export async function handleRoyaltyClaimedAvaxTestnet(log: RoyaltyClaimedLog) {
+  await handleRoyaltyClaimed(CHAIN_LIST.AVAX_TESTNET, log);
+}
+export async function handleRoyaltyClaimedBnbTestnet(log: RoyaltyClaimedLog) {
+  await handleRoyaltyClaimed(CHAIN_LIST.BNB_TESTNET, log);
+}
+
+export async function handleRoyaltyClaimed(
+  chainId: number,
+  log: RoyaltyClaimedLog
+): Promise<void> {
   logger.info(`New Royalty-claimed log at block ${log.blockNumber}`);
   assert(log.args, "No log.args");
 
@@ -15,10 +29,13 @@ export async function handleRoyaltyClaimed(log: RoyaltyClaimedLog) : Promise<voi
     return;
   }
 
-  let record = await DerivedAccountRoyaltyClaimed.get(getRoyaltyClaimedId(log));
+  let record = await DerivedAccountRoyaltyClaimed.get(
+    getRoyaltyClaimedId(chainId, log)
+  );
   if (!record) {
     record = DerivedAccountRoyaltyClaimed.create({
-      id: getRoyaltyClaimedId(log),
+      id: getRoyaltyClaimedId(chainId, log),
+      chainId,
       blockHeight: BigInt(log.blockNumber),
       derivedAccountId: account.id,
       token: log.args.requestToken.toLowerCase(),

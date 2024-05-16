@@ -12,39 +12,10 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
       timeout: 5s
       retries: 5
-
-  subquery-node:
-    image: subquerynetwork/subql-node-ethereum:latest
-    depends_on:
-      "postgres":
-        condition: service_healthy
-    restart: always
-    environment:
-      DB_USER: postgres
-      DB_PASS: postgres
-      DB_DATABASE: postgres
-      DB_HOST: postgres
-      DB_PORT: 5432
-    volumes:
-      - ./:/app
-    command:
-      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/app
-      - --db-schema=app
-      - --workers=4
-      - --batch-size=30
-      - --unfinalized-blocks=true
-      - --subscription
-
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://subquery-node:3000/ready"]
-      interval: 3s
-      timeout: 5s
-      retries: 10
 
   graphql-engine:
     image: subquerynetwork/subql-query:latest
@@ -52,8 +23,6 @@ services:
       - 3000:3000
     depends_on:
       "postgres":
-        condition: service_healthy
-      "subquery-node":
         condition: service_healthy
     restart: always
     environment:
@@ -65,5 +34,32 @@ services:
     command:
       - --name=app
       - --playground
-      - --indexer=http://subquery-node:3000
+      # - --indexer=http://subquery-node:3000
       - --subscription
+
+  subquery-node-project-avax-testnet:
+    image: onfinality/subql-node-ethereum:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+    environment:
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_DATABASE: postgres
+      DB_HOST: postgres
+      DB_PORT: "5432"
+    volumes:
+      - ./:/app
+    command:
+      - -f=app/project-avax-testnet.yaml
+      - --multi-chain
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://subquery-node-project-avax-testnet:3000/ready
+      interval: 3s
+      timeout: 5s
+      retries: 10

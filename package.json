@@ -33,6 +33,6 @@
     "@subql/testing": "latest",
     "@subql/types": "latest",
     "ethers": "^5.7.2",
-    "typescript": "latest"
+    "typescript": "5.4.3"
   }
 }

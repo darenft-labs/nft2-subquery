@@ -27,7 +27,7 @@ package-lock.json
 target/
 dist/
 src/types
-project.yaml
+project*.yaml
 
 # JetBrains IDE
 .idea/
@@ -62,4 +62,4 @@ Thumbs.db
 .env*
 !.env.example
 
-.project-cid
+.project*-cid

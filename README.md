@@ -19,20 +19,32 @@ The [SubQuery](https://subquery.network) project for NFT2.0 protocol. This inclu
 $ yarn
 ```
 
-- Create .env file from template
+- Create .env file of special chain from template. Ex for **avax-testnet**:
 ```bash
-$ cp .env.example .env
+$ cp .env.example .env.avax-testnet
 ```
 
-- Fulfill contract address, block number, etc to .env file
+- Fulfill contract address, block number, etc to env file (`.env.avax-testnet`)
 
 ## Build
-- Generate types
+- Open `project-multichain.ts` file, edit value of `chainEnv` to load chain env of specific file (ex: `avax-testnet`).
+
+- Generate file yaml and all manifest for a chain:
 ```bash
-$ yarn codegen
+$ yarn codegen -f project-multichain.ts
 ```
 
-> *This command will generate types manifest in /src/types folder*
+> *This command will also generate types manifest in /src/types folder*
+
+- Rename yaml file to target chain. Ex for **avax-testnet**:
+```bash
+$ mv project-multichain.yaml project-avax-testnet.yaml
+```
+
+- Add net work to multichain manifest
+```bash
+$ subql multi-chain:add -f subquery-multichain.yaml -c project-avax-testnet.yaml
+```
 
 - Compile code
 ```bash
@@ -43,7 +55,7 @@ $ yarn build
 ## Run locally
 - Spin up infrastructure stack, which includes PostgreSQL, Subquery node, GraphQL engine by using docker compose
 ```bash
-$ docker-compose pull && docker-compose up
+$ yarn start:docker
 ```
 
 - Access [GraphQL playground local](http://localhost:3000/) to query
@@ -62,7 +74,9 @@ query {
   dataRegistries(first: 5) {
     nodes {
       id
+      chainId
       blockHeight
+      timestamp
       dapp
       address
       uri
@@ -80,7 +94,9 @@ The result should look something like this:
       "nodes": [
         {
           "id": "0xcf9748bf255125e6143fe896de36ed2b7c329108",
+          "chainId": 43113,
           "blockHeight": "36375106",
+          "timestamp": "1705376380",
           "dapp": "0x2f1038982da18dDe6934D972128c50c079845176",
           "address": "0xcf9748bf255125e6143fe896de36ed2b7c329108",
           "uri": "ipfs://account-3"

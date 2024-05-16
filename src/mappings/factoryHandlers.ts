@@ -16,8 +16,32 @@ import {
   AddonsCreatedLog,
 } from "../types/abi-interfaces/FactoryAbi";
 import assert from "assert";
+import { CHAIN_LIST } from "./utils";
 
-export async function handleDataRegistryCreated(log: DataRegistryCreatedLog): Promise<void> {
+export async function handleDataRegistryCreatedAvax(
+  log: DataRegistryCreatedLog
+) {
+  await handleDataRegistryCreated(CHAIN_LIST.AVAX, log);
+}
+export async function handleDataRegistryCreatedBnb(
+  log: DataRegistryCreatedLog
+) {
+  await handleDataRegistryCreated(CHAIN_LIST.BNB, log);
+}
+export async function handleDataRegistryCreatedAvaxTestnet(
+  log: DataRegistryCreatedLog
+) {
+  await handleDataRegistryCreated(CHAIN_LIST.AVAX_TESTNET, log);
+}
+export async function handleDataRegistryCreatedBnbTestnet(
+  log: DataRegistryCreatedLog
+) {
+  await handleDataRegistryCreated(CHAIN_LIST.BNB_TESTNET, log);
+}
+export async function handleDataRegistryCreated(
+  chainId: number,
+  log: DataRegistryCreatedLog
+): Promise<void> {
   logger.info(`DataRegistryCreatedLog at block ${log.blockNumber}`);
 
   if (log.args != undefined) {
@@ -25,7 +49,9 @@ export async function handleDataRegistryCreated(log: DataRegistryCreatedLog): Pr
 
     const item = DataRegistry.create({
       id: registryAddr,
+      chainId,
       blockHeight: BigInt(log.blockNumber),
+      timestamp: log.block.timestamp,
       dapp: log.args.dapp.toLowerCase(),
       address: registryAddr,
       uri: log.args.dappURI,
@@ -42,7 +68,30 @@ export async function handleDataRegistryCreated(log: DataRegistryCreatedLog): Pr
   }
 }
 
-export async function handleDataRegistryV2Created(log: DataRegistryV2CreatedLog): Promise<void> {
+export async function handleDataRegistryV2CreatedAvax(
+  log: DataRegistryV2CreatedLog
+) {
+  await handleDataRegistryV2Created(CHAIN_LIST.AVAX, log);
+}
+export async function handleDataRegistryV2CreatedBnb(
+  log: DataRegistryV2CreatedLog
+) {
+  await handleDataRegistryV2Created(CHAIN_LIST.BNB, log);
+}
+export async function handleDataRegistryV2CreatedAvaxTestnet(
+  log: DataRegistryV2CreatedLog
+) {
+  await handleDataRegistryV2Created(CHAIN_LIST.AVAX_TESTNET, log);
+}
+export async function handleDataRegistryV2CreatedBnbTestnet(
+  log: DataRegistryV2CreatedLog
+) {
+  await handleDataRegistryV2Created(CHAIN_LIST.BNB_TESTNET, log);
+}
+export async function handleDataRegistryV2Created(
+  chainId: number,
+  log: DataRegistryV2CreatedLog
+): Promise<void> {
   logger.info(`DataRegistryV2CreatedLog at block ${log.blockNumber}`);
 
   if (log.args != undefined) {
@@ -50,7 +99,9 @@ export async function handleDataRegistryV2Created(log: DataRegistryV2CreatedLog)
 
     const item = DataRegistry.create({
       id: registryAddr,
+      chainId,
       blockHeight: BigInt(log.blockNumber),
+      timestamp: log.block.timestamp,
       dapp: log.args.dapp.toLowerCase(),
       address: registryAddr,
       uri: log.args.dappURI,
@@ -67,7 +118,26 @@ export async function handleDataRegistryV2Created(log: DataRegistryV2CreatedLog)
   }
 }
 
-export async function handleCollectionCreated(log: CollectionCreatedLog): Promise<void> {
+export async function handleCollectionCreatedAvax(log: CollectionCreatedLog) {
+  await handleCollectionCreated(CHAIN_LIST.AVAX, log);
+}
+export async function handleCollectionCreatedBnb(log: CollectionCreatedLog) {
+  await handleCollectionCreated(CHAIN_LIST.BNB, log);
+}
+export async function handleCollectionCreatedAvaxTestnet(
+  log: CollectionCreatedLog
+) {
+  await handleCollectionCreated(CHAIN_LIST.AVAX_TESTNET, log);
+}
+export async function handleCollectionCreatedBnbTestnet(
+  log: CollectionCreatedLog
+) {
+  await handleCollectionCreated(CHAIN_LIST.BNB_TESTNET, log);
+}
+export async function handleCollectionCreated(
+  chainId: number,
+  log: CollectionCreatedLog
+): Promise<void> {
   logger.info(`CollectionCreatedLog at block ${log.blockNumber}`);
   assert(log.args, "No log.args");
 
@@ -75,7 +145,9 @@ export async function handleCollectionCreated(log: CollectionCreatedLog): Promis
 
   const item = Collection.create({
     id: collectionAddr,
+    chainId,
     blockHeight: BigInt(log.blockNumber),
+    timestamp: log.block.timestamp,
     address: collectionAddr,
     owner: log.args.owner.toLowerCase(),
     kind: log.args.kind,
@@ -88,7 +160,30 @@ export async function handleCollectionCreated(log: CollectionCreatedLog): Promis
   });
 }
 
-export async function handleDerivedAccountCreated(log: DerivedAccountCreatedLog): Promise<void> {
+export async function handleDerivedAccountCreatedAvax(
+  log: DerivedAccountCreatedLog
+) {
+  await handleDerivedAccountCreated(CHAIN_LIST.AVAX, log);
+}
+export async function handleDerivedAccountCreatedBnb(
+  log: DerivedAccountCreatedLog
+) {
+  await handleDerivedAccountCreated(CHAIN_LIST.BNB, log);
+}
+export async function handleDerivedAccountCreatedAvaxTestnet(
+  log: DerivedAccountCreatedLog
+) {
+  await handleDerivedAccountCreated(CHAIN_LIST.AVAX_TESTNET, log);
+}
+export async function handleDerivedAccountCreatedBnbTestnet(
+  log: DerivedAccountCreatedLog
+) {
+  await handleDerivedAccountCreated(CHAIN_LIST.BNB_TESTNET, log);
+}
+export async function handleDerivedAccountCreated(
+  chainId: number,
+  log: DerivedAccountCreatedLog
+): Promise<void> {
   logger.info(`DerivedAccountCreatedLog at block ${log.blockNumber}`);
   assert(log.args, "No log.args");
 
@@ -96,7 +191,9 @@ export async function handleDerivedAccountCreated(log: DerivedAccountCreatedLog)
 
   const item = DerivedAccount.create({
     id: addr,
+    chainId,
     blockHeight: BigInt(log.blockNumber),
+    timestamp: log.block.timestamp,
     address: addr,
     underlyingCollection: log.args.underlyingCollection.toLowerCase(),
     underlyingTokenId: log.args.underlyingTokenId.toBigInt(),
@@ -109,7 +206,22 @@ export async function handleDerivedAccountCreated(log: DerivedAccountCreatedLog)
   });
 }
 
-export async function handleAddonsCreated(log: AddonsCreatedLog): Promise<void> {
+export async function handleAddonsCreatedAvax(log: AddonsCreatedLog) {
+  await handleAddonsCreated(CHAIN_LIST.AVAX, log);
+}
+export async function handleAddonsCreatedBnb(log: AddonsCreatedLog) {
+  await handleAddonsCreated(CHAIN_LIST.BNB, log);
+}
+export async function handleAddonsCreatedAvaxTestnet(log: AddonsCreatedLog) {
+  await handleAddonsCreated(CHAIN_LIST.AVAX_TESTNET, log);
+}
+export async function handleAddonsCreatedBnbTestnet(log: AddonsCreatedLog) {
+  await handleAddonsCreated(CHAIN_LIST.BNB_TESTNET, log);
+}
+export async function handleAddonsCreated(
+  chainId: number,
+  log: AddonsCreatedLog
+): Promise<void> {
   logger.info(`AddonsCreatedLog at block ${log.blockNumber}`);
   assert(log.args, "No log.args");
 
@@ -117,7 +229,9 @@ export async function handleAddonsCreated(log: AddonsCreatedLog): Promise<void> 
 
   const item = AddonsCollection.create({
     id: addr,
+    chainId,
     blockHeight: BigInt(log.blockNumber),
+    timestamp: log.block.timestamp,
     contract: addr,
     collection: log.args.collection.toLowerCase(),
     kind: log.args.kind,
