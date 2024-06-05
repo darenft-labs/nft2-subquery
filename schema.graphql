@@ -11,9 +11,10 @@ type DataRegistry @entity {
   blockHeight: BigInt
   timestamp: BigInt
   address: String
-  dapp: String
+  dapp: String! @index
   uri: String
   version: String
+  writedNFTDatas: [DataRegistryNFTData] @derivedFrom(field: "dataRegistry")
 }
 
 type DataRegistrySchema @entity {
@@ -23,7 +24,7 @@ type DataRegistrySchema @entity {
   schema: String!
 }
 
-type DataRegistryNFTData @entity {
+type DataRegistryNFTData @entity @compositeIndexes(fields: [["collection", "tokenId"]]) {
   id: ID!
   chainId: Int! @index
   blockHeight: BigInt
@@ -33,7 +34,7 @@ type DataRegistryNFTData @entity {
   collection: String!
   tokenId: BigInt!
   key: String
-  value: String  
+  value: String
 }
 
 type DataRegistryNFTInscription @entity {
@@ -52,7 +53,7 @@ type Collection @entity {
   blockHeight: BigInt
   timestamp: BigInt
   address: String
-  owner: String
+  owner: String! @index
   kind: Int
 }
 
@@ -61,14 +62,14 @@ type NFT @entity {
   chainId: Int! @index
   blockHeight: BigInt
   timestamp: BigInt
-  collection: String!
+  collection: String! @index
   tokenId: BigInt!
   tokenUri: String
-  owner: String
+  owner: String! @index
   isBurned: Boolean
   isDerived: Boolean
   underlyingNFT: NFT
-  derivedKeys: [String]
+  tbaAccounts: [ERC6551Account] @derivedFrom(field: "underlyingNFT")
 }
 
 type DerivedAccount @entity {
@@ -77,8 +78,8 @@ type DerivedAccount @entity {
   blockHeight: BigInt
   timestamp: BigInt
   address: String
-  underlyingCollection: String
-  underlyingTokenId: BigInt
+  underlyingNFT: NFT!
+  royaltyClaimed: [DerivedAccountRoyaltyClaimed] @derivedFrom(field: "derivedAccount")
 }
 
 type DerivedAccountRoyaltyClaimed @entity {
@@ -99,22 +100,33 @@ type AddonsCollection @entity {
   blockHeight: BigInt
   timestamp: BigInt
   contract: String
-  collection: String
+  collection: String! @index
   kind: Int
-  campaignId: String
+  campaignId: String! @index
   data: String
+}
+
+type ERC6551Account @entity {
+  id: ID!
+  chainId: Int! @index
+  blockHeight: BigInt
+  timestamp: BigInt
+  account: String!
+  implementation: String!
+  salt: String!
+  underlyingNFT: NFT!
 }
 
 ############################################
 #               MARKETPLACE
 ############################################
-type TakerBid @entity {
+type TakerBid @entity @compositeIndexes(fields: [["collection", "tokenId"]]) {
   id: ID!
   chainId: Int! @index
   blockHeight: BigInt
   timestamp: BigInt
-  taker: String
-  maker: String
+  taker: String! @index
+  maker: String! @index
   strategy: String
   orderHash: String
   orderNonce: BigInt
@@ -125,13 +137,13 @@ type TakerBid @entity {
   price: BigInt
 }
 
-type TakerAsk @entity {
+type TakerAsk @entity @compositeIndexes(fields: [["collection", "tokenId"]]) {
   id: ID!
   chainId: Int! @index
   blockHeight: BigInt
   timestamp: BigInt
-  taker: String
-  maker: String
+  taker: String! @index
+  maker: String! @index
   strategy: String
   orderHash: String
   orderNonce: BigInt
@@ -147,7 +159,7 @@ type CancelAllOrders @entity {
   chainId: Int! @index
   blockHeight: BigInt
   timestamp: BigInt
-  user: String
+  user: String! @index
   newMinNonce: BigInt
 }
 
@@ -156,11 +168,11 @@ type CancelMultipleOrders @entity {
   chainId: Int! @index
   blockHeight: BigInt
   timestamp: BigInt
-  user: String
+  user: String! @index
   orderNonces: [BigInt]
 }
 
-type RoyaltyPayment @entity {
+type RoyaltyPayment @entity @compositeIndexes(fields: [["collection", "tokenId"]]) {
   id: ID!
   chainId: Int! @index
   blockHeight: BigInt

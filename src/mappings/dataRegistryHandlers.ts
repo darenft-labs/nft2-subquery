@@ -35,9 +35,8 @@ export async function handleSafeWrite(
   assert(log.args, "No log.args");
 
   const dataRegistryId = log.address.toLowerCase();
-  //const dataRegistry = await getDataRegistry(dataRegistryId);
 
-  await createNFTData(
+  const data = createNFTData(
     chainId,
     dataRegistryId,
     log.args.nftCollection,
@@ -46,6 +45,7 @@ export async function handleSafeWrite(
     log.args.value,
     log
   );
+  await data.save();
 }
 
 export async function handleWriteBatchAvax(log: WriteBatchLog) {
@@ -68,26 +68,30 @@ export async function handleWriteBatch(
   assert(log.args, "No log.args");
 
   const dataRegistryId = log.address.toLowerCase();
-  //const dataRegistry = await getDataRegistry(dataRegistryId);
 
+  let datas: DataRegistryNFTData[] = [];
   for (
     let j = log.args.startId.toBigInt();
     j <= log.args.endId.toBigInt();
     j++
   ) {
-    await createNFTData(
-      chainId,
-      dataRegistryId,
-      log.args.collection,
-      j,
-      log.args.key,
-      log.args.value,
-      log
+    datas.push(
+      createNFTData(
+        chainId,
+        dataRegistryId,
+        log.args.collection,
+        j,
+        log.args.key,
+        log.args.value,
+        log
+      )
     );
   }
+
+  await store.bulkCreate("DataRegistryNFTData", datas);
 }
 
-async function createNFTData(
+function createNFTData(
   chainId: number,
   dataRegistryId: string,
   collection: string,
@@ -95,8 +99,8 @@ async function createNFTData(
   key: string,
   value: string,
   log: EthereumLog
-): Promise<void> {
-  const data = DataRegistryNFTData.create({
+) {
+  return DataRegistryNFTData.create({
     id: `${chainId}-${dataRegistryId}-${collection.toLowerCase()}-${tokenId}-${key.toLowerCase()}`,
     chainId,
     blockHeight: BigInt(log.blockNumber),
@@ -108,8 +112,6 @@ async function createNFTData(
     value: value.toLowerCase(),
     txHash: log.transactionHash.toLowerCase(),
   });
-
-  return data.save();
 }
 
 export async function handleComposeAvax(log: ComposeLog) {
@@ -145,116 +147,6 @@ export async function handleCompose(
       log
     );
   }
-}
-
-export async function handleDeriveAvax(log: DeriveLog) {
-  await handleDerive(CHAIN_LIST.AVAX, log);
-}
-export async function handleDeriveBnb(log: DeriveLog) {
-  await handleDerive(CHAIN_LIST.BNB, log);
-}
-export async function handleDeriveAvaxTestnet(log: DeriveLog) {
-  await handleDerive(CHAIN_LIST.AVAX_TESTNET, log);
-}
-export async function handleDeriveBnbTestnet(log: DeriveLog) {
-  await handleDerive(CHAIN_LIST.BNB_TESTNET, log);
-}
-export async function handleDerive(
-  chainId: number,
-  log: DeriveLog
-): Promise<void> {
-  logger.info(`New Derive log at block ${log.blockNumber}`);
-  assert(log.args, "No log.args");
-
-  const underlying = await getNFT(
-    chainId,
-    log.args.underlyingCollection,
-    log.args.underlyingTokenId.toBigInt()
-  );
-  const derived = await getNFT(
-    chainId,
-    log.args.derivedCollection,
-    log.args.derivedTokenId.toBigInt()
-  );
-
-  derived.isDerived = true;
-  derived.underlyingNFTId = underlying.id;
-  await derived.save();
-}
-
-export async function handleReclaimAvax(log: ReclaimLog) {
-  await handleReclaim(CHAIN_LIST.AVAX, log);
-}
-export async function handleReclaimBnb(log: ReclaimLog) {
-  await handleReclaim(CHAIN_LIST.BNB, log);
-}
-export async function handleReclaimAvaxTestnet(log: ReclaimLog) {
-  await handleReclaim(CHAIN_LIST.AVAX_TESTNET, log);
-}
-export async function handleReclaimBnbTestnet(log: ReclaimLog) {
-  await handleReclaim(CHAIN_LIST.BNB_TESTNET, log);
-}
-export async function handleReclaim(
-  chainId: number,
-  log: ReclaimLog
-): Promise<void> {
-  logger.info(`New Reclaim log at block ${log.blockNumber}`);
-  assert(log.args, "No log.args");
-
-  const underlying = await getNFT(
-    chainId,
-    log.args.underlyingCollection,
-    log.args.underlyingTokenId.toBigInt()
-  );
-  const derived = await getNFT(
-    chainId,
-    log.args.derivedCollection,
-    log.args.derivedTokenId.toBigInt()
-  );
-
-  derived.blockHeight = BigInt(log.blockNumber);
-  derived.timestamp = log.block.timestamp;
-  derived.isBurned = true;
-  await derived.save();
-}
-
-export async function handleTransferDerivedAvax(log: TransferLog) {
-  await handleTransferDerived(CHAIN_LIST.AVAX, log);
-}
-export async function handleTransferDerivedBnb(log: TransferLog) {
-  await handleTransferDerived(CHAIN_LIST.BNB, log);
-}
-export async function handleTransferDerivedAvaxTestnet(log: TransferLog) {
-  await handleTransferDerived(CHAIN_LIST.AVAX_TESTNET, log);
-}
-export async function handleTransferDerivedBnbTestnet(log: TransferLog) {
-  await handleTransferDerived(CHAIN_LIST.BNB_TESTNET, log);
-}
-export async function handleTransferDerived(
-  chainId: number,
-  log: TransferLog
-): Promise<void> {
-  logger.info(`New Transfer-derived log at block ${log.blockNumber}`);
-  assert(log.args, "No log.args");
-
-  logger.info(
-    `NFT ${log.args.tokenId} is transfered on collection ${log.address}`
-  );
-  const nft = await getNFT(chainId, log.address, log.args.tokenId.toBigInt());
-  nft.blockHeight = BigInt(log.blockNumber);
-  nft.timestamp = log.block.timestamp;
-  nft.owner = log.args.to.toLowerCase();
-
-  if (log.args.to == ADDRESS_ZERO) {
-    nft.isBurned = true;
-  }
-
-  await nft.save();
-}
-
-async function getDataRegistry(id: string): Promise<DataRegistry | undefined> {
-  let dataRegistry = await DataRegistry.get(id.toLowerCase());
-  return dataRegistry;
 }
 
 async function composeNFTDataByKey(
@@ -318,6 +210,113 @@ function getDataId(
   return `${chainId}-${registry.toLowerCase()}-${collection.toLowerCase()}-${tokenId}-${key.toLowerCase()}`;
 }
 
+export async function handleDeriveAvax(log: DeriveLog) {
+  await handleDerive(CHAIN_LIST.AVAX, log);
+}
+export async function handleDeriveBnb(log: DeriveLog) {
+  await handleDerive(CHAIN_LIST.BNB, log);
+}
+export async function handleDeriveAvaxTestnet(log: DeriveLog) {
+  await handleDerive(CHAIN_LIST.AVAX_TESTNET, log);
+}
+export async function handleDeriveBnbTestnet(log: DeriveLog) {
+  await handleDerive(CHAIN_LIST.BNB_TESTNET, log);
+}
+export async function handleDerive(
+  chainId: number,
+  log: DeriveLog
+): Promise<void> {
+  logger.info(`New Derive log at block ${log.blockNumber}`);
+  assert(log.args, "No log.args");
+
+  const underlying = await getNFT(
+    chainId,
+    log.args.underlyingCollection,
+    log.args.underlyingTokenId.toBigInt()
+  );
+  const derived = await getNFT(
+    chainId,
+    log.args.derivedCollection,
+    log.args.derivedTokenId.toBigInt()
+  );
+
+  derived.blockHeight = BigInt(log.blockNumber);
+  derived.timestamp = log.block.timestamp;
+  derived.isDerived = true;
+  derived.underlyingNFTId = underlying.id;
+  await derived.save();
+}
+
+export async function handleReclaimAvax(log: ReclaimLog) {
+  await handleReclaim(CHAIN_LIST.AVAX, log);
+}
+export async function handleReclaimBnb(log: ReclaimLog) {
+  await handleReclaim(CHAIN_LIST.BNB, log);
+}
+export async function handleReclaimAvaxTestnet(log: ReclaimLog) {
+  await handleReclaim(CHAIN_LIST.AVAX_TESTNET, log);
+}
+export async function handleReclaimBnbTestnet(log: ReclaimLog) {
+  await handleReclaim(CHAIN_LIST.BNB_TESTNET, log);
+}
+export async function handleReclaim(
+  chainId: number,
+  log: ReclaimLog
+): Promise<void> {
+  logger.info(`New Reclaim log at block ${log.blockNumber}`);
+  assert(log.args, "No log.args");
+
+  const derived = await getNFT(
+    chainId,
+    log.args.derivedCollection,
+    log.args.derivedTokenId.toBigInt()
+  );
+
+  derived.blockHeight = BigInt(log.blockNumber);
+  derived.timestamp = log.block.timestamp;
+  derived.isBurned = true;
+  await derived.save();
+}
+
+export async function handleTransferDerivedAvax(log: TransferLog) {
+  await handleTransferDerived(CHAIN_LIST.AVAX, log);
+}
+export async function handleTransferDerivedBnb(log: TransferLog) {
+  await handleTransferDerived(CHAIN_LIST.BNB, log);
+}
+export async function handleTransferDerivedAvaxTestnet(log: TransferLog) {
+  await handleTransferDerived(CHAIN_LIST.AVAX_TESTNET, log);
+}
+export async function handleTransferDerivedBnbTestnet(log: TransferLog) {
+  await handleTransferDerived(CHAIN_LIST.BNB_TESTNET, log);
+}
+export async function handleTransferDerived(
+  chainId: number,
+  log: TransferLog
+): Promise<void> {
+  logger.info(`New Transfer-derived log at block ${log.blockNumber}`);
+  assert(log.args, "No log.args");
+
+  logger.info(
+    `NFT ${log.args.tokenId} is transfered on collection ${log.address}`
+  );
+  const nft = await getNFT(
+    chainId,
+    log.address,
+    log.args.tokenId.toBigInt(),
+    true
+  );
+  nft.blockHeight = BigInt(log.blockNumber);
+  nft.timestamp = log.block.timestamp;
+  nft.owner = log.args.to.toLowerCase();
+
+  if (log.args.to == ADDRESS_ZERO) {
+    nft.isBurned = true;
+  }
+
+  await nft.save();
+}
+
 export async function handleURIUpdatedAvax(log: URIUpdatedLog) {
   await handleURIUpdated(CHAIN_LIST.AVAX, log);
 }
@@ -346,4 +345,9 @@ export async function handleURIUpdated(
 
   dataRegistry.uri = log.args.uri;
   await dataRegistry.save();
+}
+
+async function getDataRegistry(id: string): Promise<DataRegistry | undefined> {
+  let dataRegistry = await DataRegistry.get(id.toLowerCase());
+  return dataRegistry;
 }
