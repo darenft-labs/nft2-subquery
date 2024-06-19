@@ -118,6 +118,21 @@ type ERC6551Account @entity {
 }
 
 ############################################
+#               Raw Event
+############################################
+
+type Transfer @entity {
+  id: ID!
+  chainId: Int! @index
+  blockHeight: BigInt
+  timestamp: BigInt
+  collection: String! @index
+  tokenId: BigInt!
+  from: String!
+  to: String!
+}
+
+############################################
 #               MARKETPLACE
 ############################################
 type TakerBid @entity @compositeIndexes(fields: [["collection", "tokenId"]]) {
