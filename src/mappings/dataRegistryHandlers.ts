@@ -298,9 +298,9 @@ export async function handleTransferDerived(
   assert(log.args, "No log.args");
 
   const event = Transfer.create({
-    id: `${chainId}-${log.address.toLowerCase()}-${log.args.tokenId
-      .toBigInt()
-      .toString()}`,
+    id: `${chainId}-${log.address.toLowerCase()}-${log.args.tokenId.toString()}-${
+      log.blockNumber
+    }`,
     chainId,
     blockHeight: BigInt(log.blockNumber),
     timestamp: log.block.timestamp,
