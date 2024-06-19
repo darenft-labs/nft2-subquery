@@ -7,6 +7,7 @@ import {
   createCollectionDatasource,
   createDerivedAccountDatasource,
   createDataRegistryV2Datasource,
+  ERC6551Account,
 } from "../types";
 import {
   DataRegistryCreatedLog,
@@ -14,9 +15,10 @@ import {
   CollectionCreatedLog,
   DerivedAccountCreatedLog,
   AddonsCreatedLog,
+  ERC6551AccountCreatedLog,
 } from "../types/abi-interfaces/FactoryAbi";
 import assert from "assert";
-import { CHAIN_LIST } from "./utils";
+import { CHAIN_LIST, getNFT } from "./utils";
 
 export async function handleDataRegistryCreatedAvax(
   log: DataRegistryCreatedLog
@@ -188,6 +190,11 @@ export async function handleDerivedAccountCreated(
   assert(log.args, "No log.args");
 
   const addr = log.args.derivedAccount.toLowerCase();
+  const underlyingNFT = await getNFT(
+    chainId,
+    log.args.underlyingCollection,
+    log.args.underlyingTokenId.toBigInt()
+  );
 
   const item = DerivedAccount.create({
     id: addr,
@@ -195,8 +202,7 @@ export async function handleDerivedAccountCreated(
     blockHeight: BigInt(log.blockNumber),
     timestamp: log.block.timestamp,
     address: addr,
-    underlyingCollection: log.args.underlyingCollection.toLowerCase(),
-    underlyingTokenId: log.args.underlyingTokenId.toBigInt(),
+    underlyingNFTId: underlyingNFT.id,
   });
 
   await item.save();
@@ -237,6 +243,54 @@ export async function handleAddonsCreated(
     kind: log.args.kind,
     campaignId: log.args.campaignId,
     data: log.args.data,
+  });
+
+  await item.save();
+}
+
+export async function handleERC6551AccountCreatedAvax(
+  log: ERC6551AccountCreatedLog
+) {
+  await handleERC6551AccountCreated(CHAIN_LIST.AVAX, log);
+}
+export async function handleERC6551AccountCreatedBnb(
+  log: ERC6551AccountCreatedLog
+) {
+  await handleERC6551AccountCreated(CHAIN_LIST.BNB, log);
+}
+export async function handleERC6551AccountCreatedAvaxTestnet(
+  log: ERC6551AccountCreatedLog
+) {
+  await handleERC6551AccountCreated(CHAIN_LIST.AVAX_TESTNET, log);
+}
+export async function handleERC6551AccountCreatedBnbTestnet(
+  log: ERC6551AccountCreatedLog
+) {
+  await handleERC6551AccountCreated(CHAIN_LIST.BNB_TESTNET, log);
+}
+export async function handleERC6551AccountCreated(
+  chainId: number,
+  log: ERC6551AccountCreatedLog
+): Promise<void> {
+  logger.info(`ERC6551AccountCreatedLog at block ${log.blockNumber}`);
+  assert(log.args, "No log.args");
+
+  const addr = log.args.account.toLowerCase();
+  const underlyingNFT = await getNFT(
+    chainId,
+    log.args.tokenContract,
+    log.args.tokenId.toBigInt()
+  );
+
+  const item = ERC6551Account.create({
+    id: addr,
+    chainId,
+    blockHeight: BigInt(log.blockNumber),
+    timestamp: log.block.timestamp,
+    account: addr,
+    implementation: log.args.implementation,
+    salt: log.args.salt,
+    underlyingNFTId: underlyingNFT.id,
   });
 
   await item.save();

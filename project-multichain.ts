@@ -109,6 +109,15 @@ const project: EthereumProject = {
               ],
             },
           },
+          {
+            kind: EthereumHandlerKind.Event,
+            handler: `handleERC6551AccountCreated${process.env.CHAIN_NAME}`,
+            filter: {
+              topics: [
+                "ERC6551AccountCreated(address account, address indexed implementation, bytes32 salt, uint256 chainId, address indexed tokenContract, uint256 indexed tokenId)",
+              ],
+            },
+          },
         ],
       },
     },

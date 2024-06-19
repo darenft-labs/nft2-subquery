@@ -22,7 +22,12 @@ export async function handleTransfer(
   logger.info(`New Transfer log at block ${log.blockNumber}`);
   assert(log.args, "No log.args");
 
-  const nft = await getNFT(chainId, log.address, log.args.tokenId.toBigInt());
+  const nft = await getNFT(
+    chainId,
+    log.address,
+    log.args.tokenId.toBigInt(),
+    true
+  );
   nft.owner = log.args.to.toLowerCase();
 
   if (log.args.from == ADDRESS_ZERO) {

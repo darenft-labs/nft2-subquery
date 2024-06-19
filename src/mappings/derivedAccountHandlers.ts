@@ -1,7 +1,7 @@
 import { DerivedAccount, DerivedAccountRoyaltyClaimed } from "../types";
 import { RoyaltyClaimedLog } from "../types/abi-interfaces/DerivedAccountAbi";
 import assert from "assert";
-import { getRoyaltyClaimedId, CHAIN_LIST } from "./utils";
+import { CHAIN_LIST } from "./utils";
 
 export async function handleRoyaltyClaimedAvax(log: RoyaltyClaimedLog) {
   await handleRoyaltyClaimed(CHAIN_LIST.AVAX, log);
@@ -37,6 +37,7 @@ export async function handleRoyaltyClaimed(
       id: getRoyaltyClaimedId(chainId, log),
       chainId,
       blockHeight: BigInt(log.blockNumber),
+      timestamp: log.block.timestamp,
       derivedAccountId: account.id,
       token: log.args.requestToken.toLowerCase(),
       amount: log.args.amount.toBigInt(),
@@ -45,4 +46,8 @@ export async function handleRoyaltyClaimed(
     });
     await record.save();
   }
+}
+
+function getRoyaltyClaimedId(chainId: number, log: RoyaltyClaimedLog) {
+  return `${chainId}-${log.transactionHash.toLowerCase()}-${log.logIndex}`;
 }
