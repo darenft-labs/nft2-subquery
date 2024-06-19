@@ -37,7 +37,7 @@ services:
       # - --indexer=http://subquery-node:3000
       - --subscription
 
-  subquery-node-project-avax-testnet:
+  subquery-node-project-avax:
     image: onfinality/subql-node-ethereum:latest
     depends_on:
       postgres:
@@ -52,14 +52,40 @@ services:
     volumes:
       - ./:/app
     command:
-      - -f=app/project-avax-testnet.yaml
       - --multi-chain
+      - -f=app/project-avax.yaml
     healthcheck:
       test:
         - CMD
         - curl
         - -f
-        - http://subquery-node-project-avax-testnet:3000/ready
+        - http://subquery-node-project-avax:3000/ready
+      interval: 3s
+      timeout: 5s
+      retries: 10
+  subquery-node-project-bnb:
+    image: onfinality/subql-node-ethereum:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+    environment:
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_DATABASE: postgres
+      DB_HOST: postgres
+      DB_PORT: "5432"
+    volumes:
+      - ./:/app
+    command:
+      - --multi-chain
+      - -f=app/project-bnb.yaml
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://subquery-node-project-bnb:3000/ready
       interval: 3s
       timeout: 5s
       retries: 10
