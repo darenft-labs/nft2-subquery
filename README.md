@@ -27,30 +27,33 @@ $ cp .env.example .env.avax-testnet
 - Fulfill contract address, block number, etc to env file (`.env.avax-testnet`)
 
 ## Build
-- Open `project-multichain.ts` file, edit value of `chainEnv` to load chain env of specific file (ex: `avax-testnet`).
-
 - Generate file yaml and all manifest for a chain:
 ```bash
-$ yarn codegen -f project-multichain.ts
+$ CHAIN=<chain> yarn codegen -f project-multichain.ts && mv project-multichain.yaml project-<chain>.yaml
+```
+
+> CHAIN env var can be one of supported chains, including: *avax, bnb, avax-testnet, bnb-testnet*
+>
+> Eg., command for `avax`:
+```bash
+$ CHAIN="avax" yarn codegen -f project-multichain.ts && mv project-multichain.yaml project-avax.yaml
 ```
 
 > *This command will also generate types manifest in /src/types folder*
 
-- Rename yaml file to target chain. Ex for **avax-testnet**:
-```bash
-$ mv project-multichain.yaml project-avax-testnet.yaml
-```
-
-- Add net work to multichain manifest
-```bash
-$ subql multi-chain:add -f subquery-multichain.yaml -c project-avax-testnet.yaml
-```
-
 - Compile code
+
+> Mainnets
 ```bash
-$ yarn build
+$ yarn build -f subquery-multichain.yaml
 ```
-> *This command will compile TS code and store artifacts to /dist folder, every update logic, including configuration in project.ts would need to rerun this command*
+
+> Testnets
+```bash
+$ yarn build -f subquery-multichain-testnet.yaml
+```
+
+> *This command will compile TS code and store artifacts to /dist folder, every update logic, including configuration in project-multichain.ts would require to reexecute this command*
 
 ## Run locally
 - Spin up infrastructure stack, which includes PostgreSQL, Subquery node, GraphQL engine by using docker compose
@@ -115,33 +118,18 @@ $ curl -g -X POST -H "Content-type: application/json" \
 ```
 
 ## Publish
-- Configure chain in project.ts
-```typescript
-network{
-  chainId: "chain_id",
-  endpoint: "rpc_endpoint",
-},
-dataSources: [
-  {
-    kind: EthereumDatasourceKind.Runtime,
-    startBlock: <start-block-of-factory>,
-    options: {
-        abi: "factory",
-        address: "factory_address",
-    },
-  }
-]
-```
-
-- Compile code
-```bash
-$ yarn build
-```
-> *Verify project.yaml upon compilation to confirm chain configured properly.*
+- Prerequisites: step [Build](#build) must be done before doing publishment.
 
 - Publish project manifest to IPFS
+
+> Mainnets
 ```bash
 $ SUBQL_ACCESS_TOKEN="<access-token>" subql publish
+```
+
+> Testnets
+```bash
+$ SUBQL_ACCESS_TOKEN="<access-token>" subql publish -f subquery-multichain-testnet.yaml
 ```
 
 > *The IPFS CID will be saved in .project-cid file in root folder*
@@ -163,7 +151,7 @@ $ docker-compose down
 
 - Cleanup PostgreSQL data
 ```bash
-$ sudo rm -rf .data/
+$ sudo rm -rf ./.data/
 ```
 
 - Cleanup compiled source
