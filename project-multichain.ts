@@ -6,17 +6,29 @@ import {
 
 import dotenv from "dotenv";
 import path from "path";
+import fs from "fs";
 
 // Need to load the appropriate .env file
-const chainEnv = "chain-name";
+//const chainEnv = "chain-name";
+
+if (process.env.CHAIN == undefined) {
+  throw new Error("Missing argument: CHAIN");
+}
+
+const chainEnv = process.env.CHAIN;
 const dotenvPath = path.resolve(process.cwd(), `.env.${chainEnv}`);
+
+if (!fs.existsSync(dotenvPath)) {
+  throw new Error(`Dotenv file not found: ${dotenvPath}`);
+}
+
 dotenv.config({ path: dotenvPath });
 
 // Can expand the Datasource processor types via the generic param
 const project: EthereumProject = {
   specVersion: "1.0.0",
   version: "0.0.1",
-  name: "nft2-multichain-testnet",
+  name: "nft2-multichain",
   description: "The SubQuery indexer for NFT2.0 Protocol.",
   runner: {
     node: {

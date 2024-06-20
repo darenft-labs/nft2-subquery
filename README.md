@@ -27,19 +27,18 @@ $ cp .env.example .env.avax-testnet
 - Fulfill contract address, block number, etc to env file (`.env.avax-testnet`)
 
 ## Build
-- Open `project-multichain.ts` file, edit value of `chainEnv` to load chain env of specific file (ex: `avax-testnet`).
-
 - Generate file yaml and all manifest for a chain:
 ```bash
-$ yarn codegen -f project-multichain.ts
+$ CHAIN=<chain> subql codegen -f project-multichain.ts && mv project-multichain.yaml project-<chain>.yaml
+```
+
+> CHAIN env var can be one of supported chains, including: *avax, bnb, avax-testnet, bnb-testnet*
+> For example:
+```bash
+$ CHAIN="avax" subql codegen -f project-multichain.ts && mv project-multichain.yaml project-avax.yaml
 ```
 
 > *This command will also generate types manifest in /src/types folder*
-
-- Rename yaml file to target chain. Ex for **avax-testnet**:
-```bash
-$ mv project-multichain.yaml project-avax-testnet.yaml
-```
 
 - Add net work to multichain manifest
 ```bash
@@ -50,6 +49,7 @@ $ subql multi-chain:add -f subquery-multichain.yaml -c project-avax-testnet.yaml
 ```bash
 $ yarn build
 ```
+
 > *This command will compile TS code and store artifacts to /dist folder, every update logic, including configuration in project.ts would need to rerun this command*
 
 ## Run locally
