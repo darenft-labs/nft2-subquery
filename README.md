@@ -124,7 +124,7 @@ $ curl -g -X POST -H "Content-type: application/json" \
 
 > Mainnets
 ```bash
-$ SUBQL_ACCESS_TOKEN="<access-token>" subql publish
+$ SUBQL_ACCESS_TOKEN="<access-token>" subql publish -f subquery-multichain.yaml
 ```
 
 > Testnets
