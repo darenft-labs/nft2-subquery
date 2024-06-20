@@ -1,6 +1,7 @@
 import { TransferLog } from "../types/abi-interfaces/Erc721Abi";
 import assert from "assert";
 import { getNFT, ADDRESS_ZERO, CHAIN_LIST } from "./utils";
+import { Transfer } from "../types";
 
 export async function handleTransferAvax(log: TransferLog) {
   await handleTransfer(CHAIN_LIST.AVAX, log);
@@ -21,6 +22,20 @@ export async function handleTransfer(
 ): Promise<void> {
   logger.info(`New Transfer log at block ${log.blockNumber}`);
   assert(log.args, "No log.args");
+
+  const event = Transfer.create({
+    id: `${chainId}-${log.address.toLowerCase()}-${log.args.tokenId.toString()}-${
+      log.blockNumber
+    }`,
+    chainId,
+    blockHeight: BigInt(log.blockNumber),
+    timestamp: log.block.timestamp,
+    collection: log.address.toLowerCase(),
+    tokenId: log.args.tokenId.toBigInt(),
+    from: log.args.from.toLowerCase(),
+    to: log.args.to.toLowerCase(),
+  });
+  await event.save();
 
   const nft = await getNFT(
     chainId,

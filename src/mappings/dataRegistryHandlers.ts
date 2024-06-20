@@ -1,4 +1,4 @@
-import { DataRegistry, DataRegistryNFTData } from "../types";
+import { DataRegistry, DataRegistryNFTData, Transfer } from "../types";
 
 import {
   WriteLog,
@@ -296,6 +296,20 @@ export async function handleTransferDerived(
 ): Promise<void> {
   logger.info(`New Transfer-derived log at block ${log.blockNumber}`);
   assert(log.args, "No log.args");
+
+  const event = Transfer.create({
+    id: `${chainId}-${log.address.toLowerCase()}-${log.args.tokenId.toString()}-${
+      log.blockNumber
+    }`,
+    chainId,
+    blockHeight: BigInt(log.blockNumber),
+    timestamp: log.block.timestamp,
+    collection: log.address.toLowerCase(),
+    tokenId: log.args.tokenId.toBigInt(),
+    from: log.args.from.toLowerCase(),
+    to: log.args.to.toLowerCase(),
+  });
+  await event.save();
 
   logger.info(
     `NFT ${log.args.tokenId} is transfered on collection ${log.address}`
